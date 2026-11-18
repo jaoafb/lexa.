@@ -5,6 +5,7 @@ import unittest
 from collection_transport import EvidenceTransport
 from daily_collection import exit_status, run
 from official_http import SourceFetchError
+from camara_sources import CAMARA_IDS
 
 
 class DailyCollectionTests(unittest.TestCase):
@@ -38,7 +39,7 @@ class DailyCollectionTests(unittest.TestCase):
 
         def compare(spec, corpus, provider, checked, downloader):
             self.assertIs(corpus, current[spec['id']])
-            if spec['id'] == 'civil' and provider == 'planalto':
+            if spec['id'] == 'civil' and provider == 'camara':
                 raise RuntimeError('parser failure')
             return {'id': spec['id'], 'status': 'compared', 'differences': []}
 
@@ -46,12 +47,19 @@ class DailyCollectionTests(unittest.TestCase):
             directory = Path(temporary, 'run')
             report = run(specs, current, directory, compare=compare, transport=Transport())
             self.assertFalse(report['complete'])
-            self.assertEqual(report['expectedComparisons'], 3)
-            self.assertEqual(report['successfulComparisons'], 2)
+            self.assertEqual(report['expectedComparisons'], 2)
+            self.assertEqual(report['successfulComparisons'], 1)
             self.assertEqual(report['results'][0]['status'], 'internal_error')
             self.assertTrue((directory / 'report.json').is_file())
             self.assertTrue((directory / 'summary.md').is_file())
             self.assertEqual(repr(current), snapshot)
+
+    def test_daily_source_map_covers_every_published_legislation(self):
+        import json
+        from pilot_official_sources import ROOT
+
+        specs = json.loads((ROOT / 'monitor/sources.json').read_text(encoding='utf-8'))
+        self.assertEqual({spec['id'] for spec in specs}, set(CAMARA_IDS))
 
     def test_existing_run_directory_is_never_overwritten(self):
         with TemporaryDirectory() as temporary:

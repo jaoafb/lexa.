@@ -5,7 +5,8 @@ import json
 from pathlib import Path
 
 from collection_transport import EvidenceTransport
-from pilot_official_sources import ROOT, PILOT_IDS, load_js, probe
+from camara_sources import CAMARA_IDS
+from pilot_official_sources import ROOT, load_js, probe
 
 
 def save(path, value):
@@ -24,8 +25,10 @@ def run(specs, current, directory, *, compare=probe, transport=None):
     directory.mkdir(parents=True, exist_ok=False)
     transport = transport or EvidenceTransport(directory / 'originals')
     checked = datetime.now(timezone.utc).isoformat(timespec='seconds')
-    jobs = [(spec, 'planalto') for spec in specs]
-    jobs += [(spec, 'camara') for spec in specs if spec['id'] in PILOT_IDS]
+    unknown = sorted({spec['id'] for spec in specs} - set(CAMARA_IDS))
+    if unknown:
+        raise ValueError('Legislações sem fonte diária da Câmara: ' + ', '.join(unknown))
+    jobs = [(spec, 'camara') for spec in specs]
     report = {'schemaVersion': 1, 'checkedAt': checked, 'complete': False,
               'comparisonBasis': 'published_corpus_not_previous_run',
               'expectedComparisons': len(jobs), 'results': []}

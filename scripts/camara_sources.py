@@ -11,6 +11,21 @@ from official_http import check_url
 
 CAMARA_HOST = 'www2.camara.leg.br'
 CONSTITUTION_INDEX = f'https://{CAMARA_HOST}/atividade-legislativa/legislacao/constituicao1988'
+CAMARA_PATHS = {
+    'civil': ('/legin/fed/lei/2002/lei-10406-10-janeiro-2002-432893-normaatualizada-pl.html',),
+    'penal': ('/legin/fed/declei/1940-1949/decreto-lei-2848-7-dezembro-1940-412868-normaatualizada-pe.html',),
+    'cpc': ('/legin/fed/lei/2015/lei-13105-16-marco-2015-780273-normaatualizada-pl.html',),
+    'cdc': ('/legin/fed/lei/1990/lei-8078-11-setembro-1990-365086-normaatualizada-pl.html',),
+    'ctn': ('/legin/fed/lei/1960-1969/lei-5172-25-outubro-1966-358971-normaatualizada-pl.html',),
+    'cpp': ('/legin/fed/declei/1940-1949/decreto-lei-3689-3-outubro-1941-322206-normaatualizada-pe.html',),
+    'eca': ('/legin/fed/lei/1990/lei-8069-13-julho-1990-372211-normaatualizada-pl.html',),
+    'lep': ('/legin/fed/lei/1980-1987/lei-7210-11-julho-1984-356938-normaatualizada-pl.html',),
+    'maria-penha': ('/legin/fed/lei/2006/lei-11340-7-agosto-2006-545133-normaatualizada-pl.html',),
+    'improbidade': ('/legin/fed/lei/1992/lei-8429-2-junho-1992-357452-normaatualizada-pl.html',),
+    'licitacoes': ('/legin/fed/lei/2021/lei-14133-1-abril-2021-791222-normaatualizada-pl.html',),
+    'clt': ('/legin/fed/declei/1940-1949/decreto-lei-5452-1-maio-1943-415500-normaatualizada-pe.html',),
+}
+CAMARA_IDS = ('cf', *CAMARA_PATHS)
 CONSTITUTION_FILES = urlsplit(CONSTITUTION_INDEX).path + '/arquivos/'
 CONSTITUTION_NAMES = {
     'cf': re.compile(r'ConstituicaoTextoAtualizado[_ -]EC[_ -]+[0-9]+\.html?', re.I),

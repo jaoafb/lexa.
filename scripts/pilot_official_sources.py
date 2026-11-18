@@ -13,7 +13,7 @@ from zoneinfo import ZoneInfo
 from camara_comparison import compare_camara
 from constitution_preview import apply_constitution_preview_decisions
 from camara_sources import (
-    CAMARA_HOST, CONSTITUTION_INDEX, LAW_15371_URL, constitution_links,
+    CAMARA_HOST, CAMARA_PATHS, CONSTITUTION_INDEX, LAW_15371_URL, constitution_links,
     publication_392_d, publication_kind, references_392_d,
 )
 from check_official_sources import ADCT, ROOT, fingerprint, parse_html, validate
@@ -27,10 +27,6 @@ PROVIDERS = {
     'classico': 'portaldalegislacao-classico.presidencia.gov.br',
     'novo': 'portaldalegislacao.presidencia.gov.br',
     'camara': CAMARA_HOST,
-}
-CAMARA_PATHS = {
-    'civil': ('/legin/fed/lei/2002/lei-10406-10-janeiro-2002-432893-normaatualizada-pl.html',),
-    'clt': ('/legin/fed/declei/1940-1949/decreto-lei-5452-1-maio-1943-415500-normaatualizada-pe.html',),
 }
 
 
