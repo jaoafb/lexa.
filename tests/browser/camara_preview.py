@@ -41,7 +41,7 @@ try:
         expect(page.locator('.camara-preview-notice')).to_be_visible()
         expect(page.locator('#art-6')).to_be_visible()
         expect(page.locator('[data-edition-source]')).to_have_attribute('href', documents['main']['url'])
-        expect(page.locator('#art-6 .article-source')).to_contain_text('Câmara dos Deputados')
+        expect(page.locator('#art-6 .article-source')).to_contain_text('Planalto')
         page.locator('#art-6 [data-legislative-history]').click()
         expect(page.locator('#legislative-history-panel')).to_be_visible()
         page.keyboard.press('Escape')
@@ -49,10 +49,11 @@ try:
         page.locator('[data-scope="adct"]').click()
         expect(page.locator('#art-adct-1')).to_be_visible()
         expect(page.locator('[data-edition-source]')).to_have_attribute('href', documents['adct']['url'])
-        page.goto(base + '#/cf/adct-1')
-        expect(page.locator('#art-adct-1 .article-source')).to_contain_text('Câmara dos Deputados')
-        page.locator('#art-adct-1 .article-copy summary').click()
-        page.locator('#art-adct-1 [data-copy-text]').click()
+        expect(page.locator('#art-adct-1 .article-source')).to_contain_text('Planalto')
+        page.goto(base + '#/cf/adct-47')
+        expect(page.locator('#art-adct-47 .article-source')).to_contain_text('Câmara dos Deputados')
+        page.locator('#art-adct-47 .article-copy summary').click()
+        page.locator('#art-adct-47 [data-copy-text]').click()
         page.wait_for_function('async link => (await navigator.clipboard.readText()).includes(link)',
                                arg=documents['adct']['url'])
 
@@ -73,6 +74,17 @@ try:
         page.goto(base + '#/cf/adct-120')
         expect(page.locator('#art-adct-120')).to_contain_text('ADI nº 7.212')
         expect(page.locator('#art-adct-120 .article-source a').first).to_have_attribute('href', documents['adct']['url'])
+
+        page.goto(base + '#/cf/7')
+        expect(page.locator('#art-7 .article-review')).to_contain_text('regras de transição')
+
+        page.goto(base + '#/cf/100')
+        expect(page.locator('#art-100 .article-review')).to_contain_text('ADI 7064')
+        expect(page.locator('#art-100')).not_to_contain_text('Sem que haja interrupção no pagamento do precatório')
+
+        page.goto(base + '#/cf/adct-101')
+        expect(page.locator('#art-adct-101 .article-review')).to_contain_text('ADI 7064')
+        expect(page.locator('#art-adct-101')).not_to_contain_text('Os empréstimos de que trata o inciso III')
 
         page.evaluate("localStorage.setItem('lexa-saved', JSON.stringify(['cf/6', 'cf/adct-1']))")
         page.goto(base + '#/favoritos')

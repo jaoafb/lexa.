@@ -190,6 +190,308 @@
         "lexaSha256": "d3096197dc88ace1039a6491f72188cc1b929603a15941defba0da7761a8c784",
         "camaraSha256": "aa5cde6899d86b92da286269432c1e5ec926e4fc5d9f782eca02ea8fdcae1511"
       }
+    },
+    "readerNote": {
+      "text": "Na ADI 7212, o STF declarou inconstitucional, com efeitos ex nunc, o dispositivo da EC 123/2022 que acrescentou este artigo ao ADCT.",
+      "source": {
+        "label": "STF, julgamento da ADI 7212",
+        "url": "https://portal.stf.jus.br/processos/detalhe.asp?incidente=6446436"
+      }
+    }
+  },
+  {
+    "edition": "planalto",
+    "reason": "O fac-símile do DOU de 5/10/1988 confirma “atender a suas necessidades” no inciso IV. A prévia conserva essa grafia e explicita a referência às regras de transição da EC 141/2026.",
+    "sources": [
+      {
+        "label": "EC 141/2026",
+        "url": "https://www2.camara.leg.br/legin/fed/emecon/2026/emendaconstitucional-141-16-outubro-2026-800062-publicacaooriginal-181622-pl.html"
+      },
+      {
+        "label": "DOU de 5/10/1988, art. 7º, IV",
+        "url": "https://www.planalto.gov.br/ccivil_03/constituicao/douconstituicao88.pdf#page=3"
+      }
+    ],
+    "readerNote": {
+      "text": "A EC 141/2026 tem regras de transição para jornada e repouso semanal. Consulte os arts. 2º, 6º e 10 da emenda.",
+      "source": {
+        "label": "EC 141/2026",
+        "url": "https://www2.camara.leg.br/legin/fed/emecon/2026/emendaconstitucional-141-16-outubro-2026-800062-publicacaooriginal-181622-pl.html"
+      }
+    },
+    "articles": {
+      "7": {
+        "lexaSha256": "173be925ad0e3a9f1494c37225dd50f2cd105e07c969fb8eb3b8ea39d5200db2",
+        "camaraSha256": "0118ce66cc7138fe88a23392b2fc06a8883c6bff6d890d351b4d0b0ce9a43944"
+      }
+    }
+  },
+  {
+    "edition": "camara",
+    "reason": "A ECR 4/1994 confirma a redação do § 9º com os artigos definidos e a pontuação presentes na Câmara.",
+    "sources": [
+      {
+        "label": "ECR 4/1994, art. 1º",
+        "url": "https://www2.camara.leg.br/legin/fed/emecrv/1994/emendaconstitucionalderevisao-4-7-junho-1994-363970-publicacaooriginal-1-pl.html"
+      }
+    ],
+    "articles": {
+      "14": {
+        "lexaSha256": "8e8fcf895bb2cf024fd4fdd9d423b2306892c778dce11a5d9202b2c40d759aba",
+        "camaraSha256": "ccdbb8e832c6d24b6041fd87cff4c8edb38663dee87d1a61ea0d09b47bfe127b"
+      }
+    }
+  },
+  {
+    "edition": "camara",
+    "reason": "O § 1º da Constituição promulgada traz “aplicando-se-lhes”, como a Câmara.",
+    "sources": [
+      {
+        "label": "Constituição promulgada, art. 27, § 1º",
+        "url": "https://www2.camara.leg.br/legin/fed/consti/1988/constituicao-1988-5-outubro-1988-322142-publicacaooriginal-1-pl.html"
+      }
+    ],
+    "articles": {
+      "27": {
+        "lexaSha256": "af5a586f88214970470a3b185a2d2cef3c90dd6dcd3a3e23a20b52cfe2e24353",
+        "camaraSha256": "87ee2259dc504991238d685f56a1ae24586ea49ecd513b987d0c8751965c62af"
+      }
+    }
+  },
+  {
+    "edition": "planalto",
+    "reason": "O inciso III da Constituição promulgada usa o verbo “pôr”, como no Lexa.",
+    "sources": [
+      {
+        "label": "Constituição promulgada, art. 34, III",
+        "url": "https://www2.camara.leg.br/legin/fed/consti/1988/constituicao-1988-5-outubro-1988-322142-publicacaooriginal-1-pl.html"
+      }
+    ],
+    "articles": {
+      "34": {
+        "lexaSha256": "9280b8a54a257ab50c83a20823a609c34da3870f5c1b5cbb9bd8a27910f0a2c6",
+        "camaraSha256": "1d6e79695a7f9450080312486d888a33a5fd0766559a8244d8ec8badc929c43a"
+      }
+    }
+  },
+  {
+    "edition": "planalto",
+    "reason": "A edição do Planalto mantém riscada a expressão do § 11 afastada pelo STF. O § 9º, declarado inconstitucional no mesmo julgamento, é preservado como texto histórico na prévia.",
+    "sources": [
+      {
+        "label": "STF, ADI 7064, ementa, item 45",
+        "url": "https://portal.stf.jus.br/jurisprudencia/obterInteiroTeor.asp?idDocumento=773551133"
+      },
+      {
+        "label": "EC 113/2021",
+        "url": "https://www2.camara.leg.br/legin/fed/emecon/2021/emendaconstitucional-113-8-dezembro-2021-792072-publicacaooriginal-164078-pl.html"
+      }
+    ],
+    "readerNote": {
+      "text": "Na ADI 7064, o STF declarou inconstitucional a redação do § 9º dada pela EC 113/2021 e afastou do § 11 a expressão relativa à autoaplicabilidade para a União.",
+      "source": {
+        "label": "STF, ADI 7064, ementa, item 45",
+        "url": "https://portal.stf.jus.br/jurisprudencia/obterInteiroTeor.asp?idDocumento=773551133"
+      }
+    },
+    "inactivePrefixes": [
+      "§ 9º Sem que haja interrupção"
+    ],
+    "articles": {
+      "100": {
+        "lexaSha256": "e5c08e5ac1c61eb89ad19ba975918cc8cc54cce0900d3a20a27c0ec348117d4d",
+        "camaraSha256": "9abb3a518b03df0bfd9c2e725e839b5e43da83ceff6ae11c95f9aca6a0bd9f0c"
+      }
+    }
+  },
+  {
+    "edition": "planalto",
+    "reason": "O inciso VIII aponta para o § 5º do art. 165 no texto promulgado, como no Lexa. A edição da Câmara omite o sinal de parágrafo.",
+    "sources": [
+      {
+        "label": "Constituição promulgada, art. 167, VIII",
+        "url": "https://www2.camara.leg.br/legin/fed/consti/1988/constituicao-1988-5-outubro-1988-322142-publicacaooriginal-1-pl.html"
+      }
+    ],
+    "articles": {
+      "167": {
+        "lexaSha256": "d650d584d75cfc7afbeea89da612d995f163b12ff32ecc27b9387260bb8825a3",
+        "camaraSha256": "509729242ba635a962d4d8b696576e6ad2f413b0947f8838f5b21ac23035700e"
+      }
+    }
+  },
+  {
+    "edition": "camara",
+    "reason": "A EC 6/1995 revogou o artigo inteiro. A Câmara identifica uma única vez o alcance da revogação.",
+    "sources": [
+      {
+        "label": "EC 6/1995",
+        "url": "https://www2.camara.leg.br/legin/fed/emecon/1995/emendaconstitucional-6-15-agosto-1995-366937-publicacaooriginal-1-pl.html"
+      }
+    ],
+    "articles": {
+      "171": {
+        "lexaSha256": "63930a1d04eaf4172282d6c8b7036f9c5b571309196129f81ddecf558e876d6d",
+        "camaraSha256": "0a786a87c410b14e0312d0e97a878922b888e516deff164928aaad0e310e7572"
+      }
+    }
+  },
+  {
+    "edition": "camara",
+    "reason": "A EC 135/2024 confirma a separação das palavras “do caput” nos incisos XIV e XV.",
+    "sources": [
+      {
+        "label": "EC 135/2024",
+        "url": "https://www2.camara.leg.br/legin/fed/emecon/2024/emendaconstitucional-135-20-dezembro-2024-796776-publicacaooriginal-173870-pl.html"
+      }
+    ],
+    "articles": {
+      "212-A": {
+        "lexaSha256": "84fcebca6a2a1794c855e346c19eaa95ca551a1de7f8e69cd7ef7cf86ff43f2f",
+        "camaraSha256": "eb1c2045af482985ef13a3a96328a66d11964475c455ceb86bbd236b6bdb5a34"
+      }
+    }
+  },
+  {
+    "edition": "camara",
+    "reason": "A EC 28/2000 revogou o artigo inteiro. A Câmara identifica o artigo junto à nota de revogação.",
+    "sources": [
+      {
+        "label": "EC 28/2000",
+        "url": "https://www2.camara.leg.br/legin/fed/emecon/2000/emendaconstitucional-28-25-maio-2000-367551-publicacaooriginal-1-pl.html"
+      }
+    ],
+    "articles": {
+      "233": {
+        "lexaSha256": "389736e231e0a21c307700a7e2f640b8719727b978cb324819b224d6bd1240af",
+        "camaraSha256": "c0a59e4f85c63d0c8971cad18e09720864ea06e60e4211ad34a1d7f5b2c528e2"
+      }
+    }
+  },
+  {
+    "edition": "camara",
+    "reason": "O inciso II do texto promulgado usa “aos mini, pequenos e médios produtores rurais”, como na edição da Câmara.",
+    "sources": [
+      {
+        "label": "ADCT promulgado, art. 47, II",
+        "url": "https://www2.camara.leg.br/legin/fed/conadc/1988/constituicao.adct-1988-5-outubro-1988-322234-publicacaooriginal-1-pl.html"
+      }
+    ],
+    "articles": {
+      "adct-47": {
+        "lexaSha256": "8cd4a1a6b3fc08a35f430c9e37be73cef1b0ec895baabf0953bd05b46a982cab",
+        "camaraSha256": "31a21d3aaa37a8864b403806510e6eae0451043f958b058a97fdb76da597c57b"
+      }
+    }
+  },
+  {
+    "edition": "camara",
+    "reason": "O § 2º do texto promulgado registra o ano 1986 na referência à Lei 7.578. A Câmara conserva o ano sem a quebra encontrada no Lexa.",
+    "sources": [
+      {
+        "label": "ADCT promulgado, art. 57, § 2º",
+        "url": "https://www2.camara.leg.br/legin/fed/conadc/1988/constituicao.adct-1988-5-outubro-1988-322234-publicacaooriginal-1-pl.html"
+      }
+    ],
+    "articles": {
+      "adct-57": {
+        "lexaSha256": "7d8b281bbcafa49e3517d14552b7ab63c7cd3106d430e48529735b2044ce4886",
+        "camaraSha256": "648cfa32d8e41a03eb1735b65ff19f1699b3afe016e9aff2dd5bd8d0336a9669"
+      }
+    }
+  },
+  {
+    "edition": "camara",
+    "reason": "A EC 109/2021 revogou o art. 91 do ADCT. A Câmara identifica o artigo junto à nota.",
+    "sources": [
+      {
+        "label": "EC 109/2021",
+        "url": "https://www2.camara.leg.br/legin/fed/emecon/2021/emendaconstitucional-109-15-marco-2021-791136-publicacaooriginal-162429-pl.html"
+      }
+    ],
+    "articles": {
+      "adct-91": {
+        "lexaSha256": "80191ecee290d91adb86aa25be10887cc50c6fe82ef11b398323881111b7fe4a",
+        "camaraSha256": "e6ab61f66a79e4d7642f2a0e6315eb428df9d35f5bbef5dab67c59489660e74a"
+      }
+    }
+  },
+  {
+    "edition": "planalto",
+    "reason": "A redação do § 5º dada pela EC 113/2021 foi declarada inconstitucional. A prévia preserva o texto histórico com a separação da leitura principal e explicita a decisão.",
+    "sources": [
+      {
+        "label": "STF, ADI 7064, ementa, item 45",
+        "url": "https://portal.stf.jus.br/jurisprudencia/obterInteiroTeor.asp?idDocumento=773551133"
+      },
+      {
+        "label": "EC 113/2021",
+        "url": "https://www2.camara.leg.br/legin/fed/emecon/2021/emendaconstitucional-113-8-dezembro-2021-792072-publicacaooriginal-164078-pl.html"
+      }
+    ],
+    "readerNote": {
+      "text": "Na ADI 7064, o STF declarou inconstitucional o § 5º do art. 101 do ADCT na redação dada pela EC 113/2021.",
+      "source": {
+        "label": "STF, ADI 7064, ementa, item 45",
+        "url": "https://portal.stf.jus.br/jurisprudencia/obterInteiroTeor.asp?idDocumento=773551133"
+      }
+    },
+    "inactivePrefixes": [
+      "§ 5º Os empréstimos de que trata o inciso III"
+    ],
+    "articles": {
+      "adct-101": {
+        "lexaSha256": "79d79e6ba1d7ec22f69e6a9d55a2433b4e86081602e709bc150963e2db535130",
+        "camaraSha256": "687aba3689939c6da1466d55e9eb608a0416629096237788ba2c531abc2fca1b"
+      }
+    }
+  },
+  {
+    "edition": "planalto",
+    "reason": "A EC 136/2025 confirma a vírgula após “juros” no § 3º, igual à edição do Lexa.",
+    "sources": [
+      {
+        "label": "EC 136/2025",
+        "url": "https://www2.camara.leg.br/legin/fed/emecon/2025/emendaconstitucional-136-9-setembro-2025-797947-publicacaooriginal-176394-pl.html"
+      }
+    ],
+    "articles": {
+      "adct-116": {
+        "lexaSha256": "30befdb4fede22b58a698373e900ca47dc5c70db98bd784fbfb1e2ee2a14a665",
+        "camaraSha256": "5857e324ead6ca415d959804f1a9b1a081c3de9019e7ffb5d9a700a9d5a8bf14"
+      }
+    }
+  },
+  {
+    "edition": "planalto",
+    "reason": "O DOU da promulgação confirma o texto sem artigo antes de “ampla defesa” (LV), a vírgula após “mantido” (LXVI) e a grafia de habeas-corpus e habeas-data dos incisos LXVIII e LXIX.",
+    "sources": [
+      {
+        "label": "DOU de 5/10/1988, art. 5",
+        "url": "https://www.planalto.gov.br/ccivil_03/constituicao/douconstituicao88.pdf#page=3"
+      }
+    ],
+    "articles": {
+      "5": {
+        "lexaSha256": "83ffe64d2e56955428de75cd1cc63b0ebc289e12aed0069da20781858f4b3ccb",
+        "camaraSha256": "740fda6860b9b530056ceea11ab23cc233401f7e7908057604dfbda20147b5c1"
+      }
+    }
+  },
+  {
+    "edition": "planalto",
+    "reason": "O DOU da promulgação usa “das Mesas de uma dessas Casas Legislativas” na alínea q do inciso I, como na edição do Lexa.",
+    "sources": [
+      {
+        "label": "DOU de 5/10/1988, art. 102",
+        "url": "https://www.planalto.gov.br/ccivil_03/constituicao/douconstituicao88.pdf"
+      }
+    ],
+    "articles": {
+      "102": {
+        "lexaSha256": "d974884f9dd43076581d8be0cca769687693842904773298b23c7524e1059f32",
+        "camaraSha256": "dc0b00b4f2cc7b4d203e997c962d3f7644fe4c3fbac978a1f8d369ff77093cbf"
+      }
     }
   }
 ]

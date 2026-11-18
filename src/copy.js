@@ -8,6 +8,10 @@ export function articleCopyText(code,article,permalink){
  const source=articleEditionSource(code.source,article);
  const lines=[`${code.name} — ${articleLabel(article)}`,code.law,''];
  if(status)lines.push(`Situação indicada na edição: ${status}.`,'');
+ if(article.documentaryReview){
+  const {text,source}=article.documentaryReview;
+  lines.push(text,source.url,'');
+ }
  if(article.title)lines.push(article.title,'');
  lines.push(paragraphs.join('\n\n'),'');
  if(hasDeleted)lines.push('Os trechos identificados como riscados estão preservados conforme a fonte consultada.','');

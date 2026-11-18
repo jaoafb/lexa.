@@ -18,6 +18,7 @@ from camara_sources import (
 from check_official_sources import ADCT, ROOT, fingerprint, parse_html, validate
 from import_official import article_version, convert, load_js, version_signature
 from official_http import ALLOWED_HOSTS, SourceFetchError, download_once
+from review_constitution import PREVIEW_CHOICES, preview_choice
 
 PILOT_IDS = ('cf', 'civil', 'clt')
 PROVIDERS = {
@@ -97,11 +98,13 @@ def combine_documents(documents):
 
 
 def apply_constitution_preview_decisions(current, candidate, differences, decisions):
-    """Apply documentary decisions only to the pairs they were reviewed against."""
+    """Apply evidence to reviewed pairs and preserve text and history on unclear changes."""
     previous = {article['id']: article for article in current['articles']}
+    incoming = {article['id']: article for article in candidate['articles']}
     changes = {item['articleId']: item for item in differences}
     applied = {}
     sources = {}
+    annotations = {}
     for decision in decisions:
         for key, fingerprints in decision['articles'].items():
             if key not in previous:
@@ -114,6 +117,16 @@ def apply_constitution_preview_decisions(current, candidate, differences, decisi
             if decision['edition'] not in ('planalto', 'camara') or key in applied:
                 raise ValueError(f'Decisão documental inválida ou duplicada para o art. {key}.')
             applied[key] = {field: decision[field] for field in ('edition', 'reason', 'sources')}
+            if note := decision.get('readerNote'):
+                selected = previous[key] if decision['edition'] == 'planalto' else incoming[key]
+                inactive = []
+                for prefix in decision.get('inactivePrefixes', ()):
+                    indices = [i for i, paragraph in enumerate(selected['paragraphs'])
+                               if ''.join(run['text'] for run in paragraph['runs'] if not run['deleted']).strip().startswith(prefix)]
+                    if len(indices) != 1:
+                        raise ValueError(f'Dispositivo afastado não localizado de forma inequívoca para o art. {key}.')
+                    inactive.extend(indices)
+                annotations[key] = {**note, 'inactiveParagraphs': inactive}
             if decision['edition'] != 'planalto':
                 continue
             source = {
@@ -131,13 +144,26 @@ def apply_constitution_preview_decisions(current, candidate, differences, decisi
                 source['revocationParagraph'] = notes[0]
             sources[key] = source
 
+    for item in differences:
+        key = item['articleId']
+        choice = preview_choice(item, applied.get(key))
+        if choice in ('keep_history', 'keep_pending'):
+            sources[key] = {
+                **current['source'], 'provider': 'planalto',
+                'reviewNote': ('A prévia mantém os trechos riscados da edição do Lexa.' if choice == 'keep_history'
+                               else 'A prévia mantém a edição do Lexa enquanto a diferença entre fontes é conferida.'),
+            }
+
     for index, article in enumerate(candidate['articles']):
         key = article['id']
         if key in sources:
-            candidate['articles'][index] = {
+            article = {
                 **previous[key], 'sectionId': article['sectionId'],
                 'documentSource': sources[key],
             }
+        if key in annotations:
+            article = {**article, 'documentaryReview': annotations[key]}
+        candidate['articles'][index] = article
     return applied
 
 
@@ -208,7 +234,10 @@ def probe(spec, current, provider, checked_at, downloader=download_once, *, cons
                     'differences': differences}
         try:
             decisions = json.loads((ROOT / 'monitor/constitution-preview-decisions.json').read_text(encoding='utf-8'))
-            result['documentaryDecisions'] = apply_constitution_preview_decisions(current, candidate, differences, decisions)
+            applied = apply_constitution_preview_decisions(current, candidate, differences, decisions)
+            result['documentaryDecisions'] = applied
+            result['previewDecisions'] = {item['articleId']: preview_choice(item, applied.get(item['articleId']))
+                                          for item in differences}
         except ValueError as error:
             return {**result, 'status': 'preview_review_changed', 'reason': str(error), 'differences': differences}
         date_label = datetime.fromisoformat(checked_at).astimezone(ZoneInfo('America/Sao_Paulo')).strftime('%d/%m/%Y')
@@ -251,7 +280,7 @@ def write_constitution_review(path, comparison):
     lines = ['# Constituição e ADCT — divergências de texto', '',
              'Comparação para revisão. A linha removida mostra a edição do Lexa e a linha adicionada mostra a Câmara.', '']
     for difference in comparison['differences']:
-        if difference['kind'] != 'text_review':
+        if difference['kind'] != 'text_review' and difference['articleId'] not in comparison.get('previewDecisions', {}):
             continue
         scope = 'ADCT' if difference['scope'] == 'adct' else 'Constituição'
         lines.extend([f"## {scope} · Art. {difference['articleId'].removeprefix('adct-')}", ''])
@@ -260,6 +289,8 @@ def write_constitution_review(path, comparison):
             lines.extend([f'**Prévia com o texto {edition}.** ' + decision['reason'], ''])
             lines.extend(f"- [{source['label']}]({source['url']})" for source in decision['sources'])
             lines.append('')
+        elif choice := comparison.get('previewDecisions', {}).get(difference['articleId']):
+            lines.extend([f'**{PREVIEW_CHOICES[choice]}.**', ''])
         delta = unified_diff(review_lines(difference['before']), review_lines(difference['after']),
                              fromfile='Lexa', tofile='Câmara', n=1, lineterm='')
         lines.extend('    ' + line for line in delta)

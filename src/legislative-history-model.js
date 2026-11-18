@@ -72,7 +72,11 @@ export function readingArticle(data,codeId,article){
   return {...article,paragraphs:[{...revocation,runs}]};
  }
  let changed=false;
- const paragraphs=article.paragraphs.flatMap(paragraph=>{
+ const paragraphs=article.paragraphs.flatMap((paragraph,index)=>{
+  if(article.documentaryReview?.inactiveParagraphs?.includes(index)){
+   changed=true;
+   return [];
+  }
   if(!paragraph.runs.some(run=>run.deleted))return [paragraph];
   changed=true;
   const runs=paragraph.runs.filter(run=>!run.deleted);

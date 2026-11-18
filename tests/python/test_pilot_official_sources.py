@@ -9,7 +9,7 @@ from pilot_official_sources import (
     ROOT, apply_constitution_preview_decisions, combine_documents, load_js, parse_html, probe,
     write_constitution_review,
 )
-from review_constitution import projection
+from review_constitution import preview_choice, projection
 
 
 class OfficialSourcePilotTests(unittest.TestCase):
@@ -119,3 +119,24 @@ class OfficialSourcePilotTests(unittest.TestCase):
         self.assertEqual(projection(before), projection(with_note))
         self.assertNotEqual(projection(before)[0], projection(['Art. 1º Vale sim.'])[0])
         self.assertNotEqual(projection(before), projection(with_status))
+
+    def test_preview_retains_unverified_text_and_context(self):
+        def source(text, deleted=False):
+            return {'articles': [{'id': '1', 'scope': 'main', 'sectionId': 'a', 'paragraphs': [
+                {'runs': [{'text': text, 'deleted': deleted}]},
+            ]}], 'source': {'url': 'https://example.test/planalto'}}
+
+        current = source('Art. 1º Vale, sim.')
+        candidate = source('Art. 1º Vale sim.')
+        differences = compare_camara(current, candidate)
+        self.assertEqual(preview_choice(differences[0]), 'keep_pending')
+        apply_constitution_preview_decisions(current, candidate, differences, [])
+        self.assertEqual(candidate['articles'][0]['paragraphs'], current['articles'][0]['paragraphs'])
+        self.assertEqual(candidate['articles'][0]['documentSource']['provider'], 'planalto')
+
+        candidate = source('Art. 1º Vale, sim. (Vide ADI 100)')
+        self.assertEqual(preview_choice(compare_camara(current, candidate)[0]), 'keep_pending')
+        candidate = source('Art. 1° Vale, sim. (Redação dada pela Emenda Constitucional nº 8, de 1995)')
+        self.assertEqual(preview_choice(compare_camara(current, candidate)[0]), 'editorial')
+        candidate = source('Art. 1º Vale, sim.', deleted=True)
+        self.assertEqual(preview_choice(compare_camara(current, candidate)[0]), 'keep_history')

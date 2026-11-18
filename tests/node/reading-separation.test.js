@@ -51,3 +51,15 @@ test('prévia exibe a nota de revogação conferida e mantém os trechos histór
  assert.match(visible.paragraphs[0].runs.map(run=>run.text).join('').trim(),/^\(Revogado pela Emenda Constitucional nº 126, de 2022\)$/);
  assert.equal(JSON.stringify(article),snapshot);
 });
+
+test('prévia separa o parágrafo afastado e mantém a nota e a fonte para leitura e cópia',()=>{
+ const base=officialImported.cf.articles.find(article=>article.id==='100');
+ const index=base.paragraphs.findIndex(p=>p.runs[0].text.startsWith('§ 9º Sem que haja interrupção'));
+ assert.ok(index>=0);
+ const documentaryReview={inactiveParagraphs:[index],text:'Nota documental'};
+ const article={...base,documentaryReview};
+ const visible=readingArticle({records:[]},'cf',article);
+ assert.equal(visible.documentaryReview,documentaryReview);
+ assert.ok(!visible.paragraphs.some(p=>p.runs[0].text.startsWith('§ 9º Sem que haja interrupção')));
+ assert.equal(article.paragraphs,base.paragraphs);
+});

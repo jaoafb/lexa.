@@ -28,6 +28,10 @@ AMENDMENT_NOTE = re.compile(
     r'renumerad[oa]) pel[oa] Emenda Constitucional\b[^()]*$', re.I,
 )
 CAVEAT = re.compile(r'\b(?:inconstitucion\w*|vigência encerrada|suspens\w*|modula\w*)\b', re.I)
+LEGAL_CONTEXT = re.compile(
+    r'\b(?:ADIs?|ADPFs?|ADINs?|ADCs?|regulamento|vigência|produção de efeitos?|revogad[oa]s?|'
+    r'vetad[oa]s?|suprimid[oa]s?)\b', re.I,
+)
 PLAIN_NOTE = re.compile(r'^\((?:Regulamento|Produção de efeitos?|Vigência)\)$', re.I)
 TOKENS = re.compile(r'\w+|[^\s\w]')
 WORDS = re.compile(r'\w+')
@@ -39,6 +43,12 @@ LABELS = {
     'senate_matches_camara': ('Senado e Câmara', 'Texto do Senado coincide com a Câmara nessa comparação'),
     'same_words': ('Mesmas palavras', 'Mesmas palavras na mesma ordem, com diferença gráfica ou de pontuação'),
     'further_review': ('Em aberto', 'Diferença de texto, de estrutura ou de marcação ainda aberta'),
+}
+PREVIEW_CHOICES = {
+    'documentary': 'Decisão documental aplicada',
+    'editorial': 'Câmara · diferença editorial conferida',
+    'keep_history': 'Planalto · mantém trechos riscados da edição em uso',
+    'keep_pending': 'Planalto · seleção da redação ainda pendente',
 }
 
 
@@ -124,6 +134,28 @@ def classify(change, senate, documented):
     return 'further_review'
 
 
+def preview_choice(change, document=None):
+    """Choose a preview disposition for each compared article without judging legal effect."""
+    if document:
+        return 'documentary'
+    if change['historicalDiffers']:
+        return 'keep_history'
+    if change['matchedByRange'] or change['conflictingStatusReference']:
+        return 'keep_pending'
+    left, right = change['before'], change['after']
+    if left is None or right is None or left['title'] != right['title']:
+        return 'keep_pending'
+    before, after = map(surviving_paragraphs, (left, right))
+    # Compare by paragraph, keeping markers and legal punctuation. Do not promote
+    # a variant on a text-only match when it adds or removes legal-status context.
+    if ([projection([line])[0] for line in before if strip_notes(line)] ==
+            [projection([line])[0] for line in after if strip_notes(line)] and
+            [line for line in before if LEGAL_CONTEXT.search(line) or CAVEAT.search(line)] ==
+            [line for line in after if LEGAL_CONTEXT.search(line) or CAVEAT.search(line)]):
+        return 'editorial'
+    return 'keep_pending'
+
+
 def document_decisions(comparison):
     decisions = json.loads((ROOT / 'monitor/constitution-preview-decisions.json').read_text(encoding='utf-8'))
     changes = {item['articleId']: item for item in comparison['differences']}
@@ -139,16 +171,24 @@ def document_decisions(comparison):
 
 def write_review(path, comparison, senate):
     groups = list(document_decisions(comparison))
-    documented = {key: group['edition'] for group, keys in groups for key in keys}
+    documented = {key: group for group, keys in groups for key in keys}
     rows = []
     counts = Counter()
+    choices = Counter()
     history_count = 0
     for change in comparison['differences']:
-        if change['kind'] != 'text_review':
-            continue
         key = change['articleId']
-        classification = classify(change, senate.get(key), documented.get(key))
-        counts[classification] += 1
+        decision = documented.get(key)
+        choice = preview_choice(change, decision)
+        choices[choice] += 1
+        if change['kind'] == 'text_review':
+            evidence = decision['edition'] if decision else None
+            classification = classify(change, senate.get(key), evidence)
+            counts[classification] += 1
+            finding = LABELS[classification][0]
+        else:
+            finding = {'historical_difference': 'Variação nas redações riscadas',
+                       'editorial_representation': 'Representação editorial'}.get(change['kind'], change['kind'])
         scope = 'ADCT' if change['scope'] == 'adct' else 'CF'
         source_file, anchor, _ = senate.get(key, (None, None, None))
         locator = source_file.removeprefix('OEBPS/') if source_file else '—'
@@ -156,23 +196,28 @@ def write_review(path, comparison, senate):
             locator += '#' + anchor
         history_count += change['historicalDiffers']
         history = 'Sim' if change['historicalDiffers'] else '—'
-        rows.append(f'| {scope} · {key.removeprefix("adct-")} | {LABELS[classification][0]} | {history} | {locator} |')
+        rows.append(f'| {scope} · {key.removeprefix("adct-")} | {finding} | '
+                    f'{PREVIEW_CHOICES[choice]} | {history} | {locator} |')
 
     lines = [
         '# Conferência das divergências constitucionais', '',
-        f'{len(rows)} divergências inicialmente classificadas como text_review. '
+        f'{len(rows)} divergências da comparação completa, das quais {sum(counts.values())} foram sinalizadas para revisão textual. '
         'As decisões documentais indicam a edição escolhida para a divergência específica. '
         'A revisão do restante do artigo e do histórico é independente. '
         'As coincidências são indícios para revisão jurídica e se referem ao texto sem riscos, '
         'com notas editoriais reconhecidas e chamadas de rodapé retiradas da comparação. '
         'A pontuação é mantida na comparação de texto. '
         f'Em {history_count} artigos há também diferenças nos trechos riscados das fontes, indicadas na tabela. '
-        'Essas diferenças exigem revisão própria.', '',
+        'O relatório bruto mantém ambas as versões integrais. '
+        'O texto de base é preservado sempre que a substituição possa perder redações históricas ou contexto sem evidência suficiente.', '',
         f'- Lexa (Planalto), SHA-256 semântico {comparison["currentEdition"]["sha256"]}.',
         f'- Câmara, SHA-256 semântico {comparison["semanticSha256"]}.',
         f'- Senado, [ePub compilado até a EC 141]({SENATE_URL}), SHA-256 {SENATE_SHA256}.', '',
         '| Resultado | Critério | Artigos |', '| --- | --- | ---: |',
         *(f'| {label} | {criterion} | {counts[key]} |' for key, (label, criterion) in LABELS.items()), '',
+        '## Decisões na prévia', '',
+        '| Ação | Artigos |', '| --- | ---: |',
+        *(f'| {label} | {choices[key]} |' for key, label in PREVIEW_CHOICES.items()), '',
         '## Decisões documentais aplicadas à prévia', '',
     ]
     for decision, keys in groups:
@@ -181,8 +226,8 @@ def write_review(path, comparison, senate):
         links = ' · '.join(f'[{s["label"]}]({s["url"]})' for s in decision['sources'])
         lines.extend([f'- **{ids} · {edition}** — {decision["reason"]} {links}', ''])
     lines.extend(['## Resultado por artigo', '',
-                  '| Artigo | Resultado | Diferença em trecho riscado | Localizador no EPUB do Senado |',
-                  '| --- | --- | --- | --- |', *rows, '',
+                  '| Artigo | Evidência textual | Decisão na prévia | Diferença em trecho riscado | Localizador no EPUB do Senado |',
+                  '| --- | --- | --- | --- | --- |', *rows, '',
                   '## Reprodução', '',
                   'Use o JSON original da comparação da Câmara e o EPUB identificado acima.', '',
                   '```sh',
