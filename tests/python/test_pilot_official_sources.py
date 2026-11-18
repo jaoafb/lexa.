@@ -1,7 +1,7 @@
 import json
 import unittest
 
-from pilot_official_sources import ROOT, load_js, probe
+from pilot_official_sources import ROOT, combine_documents, load_js, parse_html, probe
 
 
 class OfficialSourcePilotTests(unittest.TestCase):
@@ -41,6 +41,16 @@ class OfficialSourcePilotTests(unittest.TestCase):
 
         result = self.check_source('civil', blocked)
         self.assertEqual(result['status'], 'transfer_failed')
-        self.assertEqual(result['responses'][0]['redirect'], 'https://gov.br/planalto')
+        self.assertEqual(result['resources'][0]['responses'][0]['redirect'], 'https://gov.br/planalto')
         self.assertNotIn('secret', json.dumps(result))
         self.assertNotIn('differences', result)
+
+    def test_camara_adct_keeps_its_own_heading(self):
+        constitution = parse_html(b'<h1>Constituicao</h1><p>Art. 1 Texto constitucional.</p>')
+        adct = parse_html(('<h1>Câmara dos Deputados</h1>'
+                          '<h2>ATO DAS DISPOSIÇÕES CONSTITUCIONAIS TRANSITÓRIAS</h2>'
+                          '<p>Art. 1 Texto transitório.</p>').encode())
+        combined = combine_documents([constitution, adct])
+        self.assertEqual(combined['blocks'], constitution['blocks'] + adct['blocks'][1:])
+        with self.assertRaisesRegex(ValueError, 'Cabeçalho do ADCT'):
+            combine_documents([constitution, constitution])

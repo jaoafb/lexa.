@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 from urllib.parse import urljoin, urlsplit, urlunsplit
 
-from check_official_sources import ROOT, fingerprint, parse_html, validate
+from check_official_sources import ADCT, ROOT, fingerprint, parse_html, validate
 from import_official import article_version, convert, load_js, version_signature
 from official_http import ALLOWED_HOSTS, SourceFetchError, download_once
 
@@ -16,6 +16,14 @@ PROVIDERS = {
     'planalto': 'www.planalto.gov.br',
     'classico': 'portaldalegislacao-classico.presidencia.gov.br',
     'novo': 'portaldalegislacao.presidencia.gov.br',
+    'camara': 'www2.camara.leg.br',
+}
+CAMARA_CONSTITUTION = '/atividade-legislativa/legislacao/constituicao1988/arquivos/'
+CAMARA_PATHS = {
+    'cf': (CAMARA_CONSTITUTION + 'ConstituicaoTextoAtualizado_EC%20141.html',
+           CAMARA_CONSTITUTION + 'constituicao-adct-de-1988_ec-136.html'),
+    'civil': ('/legin/fed/lei/2002/lei-10406-10-janeiro-2002-432893-normaatualizada-pl.html',),
+    'clt': ('/legin/fed/declei/1940-1949/decreto-lei-5452-1-maio-1943-415500-normaatualizada-pe.html',),
 }
 
 
@@ -42,16 +50,8 @@ def article_differences(current, candidate):
     return differences
 
 
-def probe(spec, current, provider, checked_at, downloader=download_once):
-    host = PROVIDERS[provider]
-    allowed_hosts = ALLOWED_HOSTS if provider == 'planalto' else {host}
-    path = urlsplit(spec['url']).path
-    candidate_spec = {**spec, 'url': f'https://{host}{path}'}
-    result = {
-        'id': spec['id'], 'requestedUrl': candidate_spec['url'], 'responses': [],
-        'currentEdition': {key: current['source'][key] for key in ('url', 'capturedAt', 'sha256')},
-        'status': 'transfer_failed',
-    }
+def download_document(url, allowed_hosts, downloader):
+    result = {'requestedUrl': url, 'responses': [], 'status': 'transfer_failed'}
 
     def observe(url, status, location):
         response = {'url': public_url(url), 'status': status}
@@ -63,29 +63,65 @@ def probe(spec, current, provider, checked_at, downloader=download_once):
         result['responses'].append(response)
 
     try:
-        raw, encoding = downloader(candidate_spec['url'], allowed_hosts, observe_response=observe)
+        raw, encoding = downloader(url, allowed_hosts, observe_response=observe)
     except (SourceFetchError, ValueError) as error:
-        return {**result, 'reason': str(error)}
+        return {**result, 'reason': str(error)}, None
+    except OSError as error:
+        return {**result, 'reason': f'Falha de transferência ou leitura ({type(error).__name__}).'}, None
 
     result.update(rawSha256=sha256(raw).hexdigest(), bytes=len(raw), status='invalid_document')
     try:
         document = parse_html(raw, encoding)
+    except ValueError as error:
+        return {**result, 'reason': str(error)}, None
+    return {**result, 'status': 'parsed'}, document
+
+
+def combine_documents(documents):
+    if len(documents) == 1:
+        return documents[0]
+    constitution, adct = documents
+    headings = [index for index, block in enumerate(adct['blocks'])
+                if ''.join(run['text'] for run in block).upper() == ADCT]
+    if len(headings) != 1:
+        raise ValueError('Cabeçalho do ADCT ausente ou repetido no arquivo da Câmara.')
+    return {
+        'blocks': constitution['blocks'] + adct['blocks'][headings[0]:],
+        'deletion_styles': sorted(set(constitution['deletion_styles'] + adct['deletion_styles'])),
+    }
+
+
+def probe(spec, current, provider, checked_at, downloader=download_once):
+    host = PROVIDERS[provider]
+    allowed_hosts = ALLOWED_HOSTS if provider == 'planalto' else {host}
+    paths = CAMARA_PATHS[spec['id']] if provider == 'camara' else (urlsplit(spec['url']).path,)
+    captures = [download_document(f'https://{host}{path}', allowed_hosts, downloader) for path in paths]
+    resources, documents = zip(*captures)
+    result = {
+        'id': spec['id'], 'resources': resources,
+        'currentEdition': {key: current['source'][key] for key in ('url', 'capturedAt', 'sha256')},
+    }
+    for resource, document in captures:
+        if document is None:
+            return {**result, 'status': resource['status'], 'reason': resource['reason']}
+
+    final_url = resources[0]['responses'][-1]['url']
+    candidate_spec = {**spec, 'url': final_url}
+    try:
+        document = combine_documents(documents)
         result['articleCounts'] = validate(document, candidate_spec)
     except ValueError as error:
-        return {**result, 'reason': str(error)}
+        return {**result, 'status': 'invalid_document', 'reason': str(error)}
 
-    result['status'] = 'conversion_failed'
-    final_url = result['responses'][-1]['url']
-    candidate_spec['url'] = final_url
     snapshot = {
         'schema_version': 1, 'id': spec['id'], 'source_url': final_url,
-        'captured_at': checked_at, 'raw_sha256': result['rawSha256'],
+        'captured_at': checked_at, 'raw_sha256': resources[0]['rawSha256'] if len(resources) == 1 else None,
         'semantic_sha256': fingerprint(document), 'document': document,
     }
     try:
         candidate = convert(candidate_spec, snapshot, allowed_hosts=allowed_hosts)
     except ValueError as error:
-        return {**result, 'reason': str(error)}
+        return {**result, 'status': 'conversion_failed', 'reason': str(error)}
 
     return {**result, 'status': 'compared', 'semanticSha256': snapshot['semantic_sha256'],
             'differences': article_differences(current, candidate),

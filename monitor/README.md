@@ -51,7 +51,7 @@ O piloto consulta Constituição/ADCT, Código Civil e CLT pela origem cadastrad
 python3 scripts/pilot_official_sources.py --provider novo --output monitor/run/pilot-v2/novo.json
 ```
 
-Use `classico` ou `planalto` para testar as demais origens. O resultado se refere àquele ambiente de execução e horário. Diferenças de texto, marcações e estrutura exigem revisão antes de uma migração.
+Use `classico` ou `planalto` para testar as demais origens da Presidência, ou `camara` para testar os HTMLs oficiais da Câmara. A Câmara fornece Constituição e ADCT em arquivos separados, com URL e hash registrados por arquivo. Os links da Câmara neste piloto foram verificados para a comparação de novembro de 2026. O resultado se refere àquele ambiente de execução e horário. Diferenças de texto, marcações e estrutura exigem revisão antes de uma migração.
 
 ### Monitor diário
 

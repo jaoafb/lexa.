@@ -22,7 +22,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        provider: [planalto, classico, novo]
+        provider: [planalto, classico, novo, camara]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
