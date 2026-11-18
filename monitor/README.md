@@ -43,19 +43,21 @@ Em **Settings → Actions → General**, permita os actions utilizados e a cria�
 
 ## Execução local
 
-### Piloto dos portais da Presidência
+### Conferência diária com a Câmara
 
-O piloto consulta Constituição/ADCT, Código Civil e CLT pela origem cadastrada, pelo Portal Clássico e pelo Novo Portal. Ele testa o caminho cadastrado em cada domínio, valida o texto e compara os artigos com o leitor atual. O relatório registra respostas HTTP, hashes, cobertura e diferenças para revisão. A execução retorna falha quando a fonte não permite comparar as três normas. Os arquivos gerados ficam em `monitor/run/` no workflow do piloto, que tem permissão de leitura.
+A conferência consulta Constituição/ADCT, Código Civil e CLT na Câmara e compara com a edição do Lexa. O GitHub Actions programa a consulta diária para 06:40 em Brasília na branch padrão e guarda os relatórios por 14 dias. O workflow tem permissão de leitura e inclui no resumo a quantidade de divergências por coleção. O artefato inclui um JSON de evidências e um relatório Markdown com as diferenças de texto da Constituição e do ADCT.
 
 ```sh
-python3 scripts/pilot_official_sources.py --provider novo --output monitor/run/pilot-v2/novo.json
+python3 scripts/pilot_official_sources.py --provider camara --output monitor/run/pilot-v2/camara.json
 ```
 
-Use `classico` ou `planalto` para testar as demais origens da Presidência, ou `camara` para testar os HTMLs oficiais da Câmara. A Câmara fornece Constituição e ADCT em arquivos separados, com URL e hash registrados por arquivo. Os links da Câmara neste piloto foram verificados para a comparação de novembro de 2026. O resultado se refere àquele ambiente de execução e horário. Diferenças de texto, marcações e estrutura exigem revisão antes de uma migração.
+Para diagnóstico das origens da Presidência, escolha `planalto`, `classico` ou `novo` na execução manual. A conferência resolve os HTMLs de Constituição e ADCT no índice oficial da Câmara e registra a URL e o hash do índice e de cada arquivo. Índice incompleto, links ambíguos ou fontes indisponíveis interrompem a comparação afetada e ficam registrados no relatório.
 
 Na comparação com a Câmara, cada linha mantém o identificador do Lexa e mostra o identificador efetivo em cada edição. Quando um artigo individual está coberto por um intervalo que declara expressamente revogação, supressão ou veto, a linha aponta para esse intervalo. A correspondência usa a mesma numeração e o mesmo escopo e os identificadores com letras são avaliados individualmente. Intervalos reconhecidos e sobrepostos bloqueiam a comparação.
 
 O relatório mantém os textos integrais dos dois lados e registra divergências de redação, redações riscadas e diferenças nas referências de revogação que consegue identificar. A comparação usa uma projeção com marcadores e notas editoriais reconhecidos para indicar diferenças de apresentação. A projeção serve à triagem e os textos brutos, os identificadores publicados e o histórico continuam sendo as referências para a revisão da proposta.
+
+Os dispositivos com redação integralmente riscada e notas documentais de vigência encerrada entram como histórico preservado. Entradas compostas por marcadores explícitos de veto entram como registros documentais. No art. 392-D da CLT, a referência à Lei 15.371/2026 é conferida na publicação original e o relatório registra separadamente o texto publicado, a data da publicação e a cláusula expressa de vigência. Ao chegar à data declarada, a redação permanece pendente de revisão. A conferência entrega evidências para revisão jurídica antes de uma troca de fonte.
 
 ### Monitor diário
 

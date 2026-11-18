@@ -39,6 +39,8 @@ EDITORIAL_NOTE = re.compile(
     re.I,
 )
 STATUS_CHANGE = re.compile(r'\b(?:revogad[oa]s?|suprimid[oa]s?|vetad[oa]s?)\b', re.I)
+ENDED_TERM_NOTE = re.compile(r'^(?:\(Vigência encerrada\)|Vigência encerrada)$', re.I)
+VETO_NOTE = re.compile(r'^\(Vetad[oa] na (?P<reference>Lei\b[^()]+)\)$', re.I)
 
 
 def citation_evidence(reference):
@@ -144,6 +146,36 @@ def aligned_signature(article):
     return active, historical, references
 
 
+def surviving_paragraphs(article):
+    return [
+        text for paragraph in article['paragraphs']
+        if (text := ''.join(run['text'] for run in paragraph['runs'] if not run['deleted']).strip())
+    ]
+
+
+def is_historical_annotation(text):
+    if ENDED_TERM_NOTE.fullmatch(text):
+        return True
+    status = STATUS.fullmatch(text)
+    return bool(status and status['status'].lower() == 'revogad' and status['reference']
+                and STATUS_REFERENCE.fullmatch(status['reference']))
+
+
+def unmatched_kind(old, new, old_history):
+    if new is None and old_history:
+        notes = surviving_paragraphs(old)
+        if notes and any(ENDED_TERM_NOTE.fullmatch(note) for note in notes) and all(map(is_historical_annotation, notes)):
+            return 'retained_history'
+    if old is None and 'rangeEnd' not in new:
+        paragraphs = surviving_paragraphs(new)
+        if len(paragraphs) == 1 and not any(run['deleted'] for p in new['paragraphs'] for run in p['runs']):
+            prefix = ARTICLE_PREFIX.match(paragraphs[0])
+            note = VETO_NOTE.fullmatch(paragraphs[0][prefix.end():]) if prefix else None
+            if note and STATUS_REFERENCE.fullmatch(note['reference']):
+                return 'documentary_veto'
+    return 'unmatched'
+
+
 def compare_camara(current, candidate):
     before = {article['id']: article for article in current['articles']}
     after = {article['id']: article for article in candidate['articles']}
@@ -170,7 +202,7 @@ def compare_camara(current, candidate):
             for left, right in zip(old_references[index], new_references[index])
         )
         if old is None or new is None:
-            kind = 'unmatched'
+            kind = unmatched_kind(old_article, new_article, old_history)
         elif old_active != new_active or conflicting_status_reference:
             kind = 'text_review'
         elif old_history != new_history:

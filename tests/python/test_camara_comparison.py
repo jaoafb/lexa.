@@ -118,3 +118,24 @@ class CamaraComparisonTests(unittest.TestCase):
         self.assertEqual(row['kind'], 'historical_difference')
         self.assertTrue(row['historicalDiffers'])
         self.assertTrue(row['before']['paragraphs'][0]['runs'][0]['deleted'])
+
+    def test_only_struck_wording_with_historical_notes_is_retained_in_history(self):
+        historical = article('12-A', '(Vigência encerrada)', struck='Art. 12-A. Redação anterior.')
+        paragraphs = historical['paragraphs']
+        paragraphs.append({'runs': [{'text': '(Revogado pela Medida Provisória n. 955, de 2020)', 'deleted': False}]})
+
+        row = compare(before=[historical], after=[])[0]
+
+        self.assertEqual((row['kind'], row['beforeArticleId']), ('retained_history', '12-A'))
+        self.assertEqual(row['before']['paragraphs'][0]['runs'][0], {'text': 'Art. 12-A. Redação anterior.', 'deleted': True})
+
+        historical['paragraphs'].append({'runs': [{'text': 'Parágrafo único. Redação adicional.', 'deleted': False}]})
+        self.assertEqual(compare(before=[historical], after=[])[0]['kind'], 'unmatched')
+
+    def test_only_veto_placeholders_are_documentary_entries(self):
+        veto = article('401-A', 'Art. 401-A. (VETADO na Lei nº 9.799, de 26/5/1999)')
+        row = compare(before=[], after=[veto])[0]
+        self.assertEqual((row['kind'], row['afterArticleId']), ('documentary_veto', '401-A'))
+
+        veto['paragraphs'].append({'runs': [{'text': '§ 1º Redação adicional.', 'deleted': False}]})
+        self.assertEqual(compare(before=[], after=[veto])[0]['kind'], 'unmatched')

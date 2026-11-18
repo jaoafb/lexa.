@@ -1,7 +1,9 @@
 import json
+from pathlib import Path
+from tempfile import TemporaryDirectory
 import unittest
 
-from pilot_official_sources import ROOT, combine_documents, load_js, parse_html, probe
+from pilot_official_sources import ROOT, combine_documents, load_js, parse_html, probe, write_constitution_review
 
 
 class OfficialSourcePilotTests(unittest.TestCase):
@@ -54,3 +56,18 @@ class OfficialSourcePilotTests(unittest.TestCase):
         self.assertEqual(combined['blocks'], constitution['blocks'] + adct['blocks'][1:])
         with self.assertRaisesRegex(ValueError, 'Cabeçalho do ADCT'):
             combine_documents([constitution, constitution])
+
+    def test_constitution_review_labels_scope_and_preserves_deleted_markers(self):
+        before = {'title': None, 'paragraphs': [{'runs': [{'text': 'Redação anterior.', 'deleted': True}]}]}
+        after = {'title': None, 'paragraphs': [{'runs': [{'text': 'Texto da Câmara.', 'deleted': False}]}]}
+        change = {'scope': 'adct', 'articleId': 'adct-2', 'kind': 'text_review', 'before': before, 'after': after}
+        editorial = {**change, 'articleId': 'adct-3', 'kind': 'editorial_representation'}
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / 'review.md'
+            write_constitution_review(path, {'differences': [change, editorial]})
+            text = path.read_text(encoding='utf-8')
+
+        self.assertIn('## ADCT · Art. 2', text)
+        self.assertIn('    -[RISCADO] Redação anterior. [/RISCADO]', text)
+        self.assertIn('    +Texto da Câmara.', text)
+        self.assertNotIn('Art. 3', text)
