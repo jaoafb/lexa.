@@ -53,6 +53,10 @@ python3 scripts/pilot_official_sources.py --provider novo --output monitor/run/p
 
 Use `classico` ou `planalto` para testar as demais origens da Presidência, ou `camara` para testar os HTMLs oficiais da Câmara. A Câmara fornece Constituição e ADCT em arquivos separados, com URL e hash registrados por arquivo. Os links da Câmara neste piloto foram verificados para a comparação de novembro de 2026. O resultado se refere àquele ambiente de execução e horário. Diferenças de texto, marcações e estrutura exigem revisão antes de uma migração.
 
+Na comparação com a Câmara, cada linha mantém o identificador do Lexa e mostra o identificador efetivo em cada edição. Quando um artigo individual está coberto por um intervalo que declara expressamente revogação, supressão ou veto, a linha aponta para esse intervalo. A correspondência usa a mesma numeração e o mesmo escopo e os identificadores com letras são avaliados individualmente. Intervalos reconhecidos e sobrepostos bloqueiam a comparação.
+
+O relatório mantém os textos integrais dos dois lados e registra divergências de redação, redações riscadas e diferenças nas referências de revogação que consegue identificar. A comparação usa uma projeção com marcadores e notas editoriais reconhecidos para indicar diferenças de apresentação. A projeção serve à triagem e os textos brutos, os identificadores publicados e o histórico continuam sendo as referências para a revisão da proposta.
+
 ### Monitor diário
 
 Node.js 22+, Python 3.12+ (biblioteca padrão) e curl:

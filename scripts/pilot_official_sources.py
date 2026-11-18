@@ -1,12 +1,14 @@
 """Compare three laws from one official portal with the current reader edition."""
 
 import argparse
+from collections import Counter
 from datetime import datetime, timezone
 from hashlib import sha256
 import json
 from pathlib import Path
 from urllib.parse import urljoin, urlsplit, urlunsplit
 
+from camara_comparison import compare_camara
 from check_official_sources import ADCT, ROOT, fingerprint, parse_html, validate
 from import_official import article_version, convert, load_js, version_signature
 from official_http import ALLOWED_HOSTS, SourceFetchError, download_once
@@ -123,8 +125,17 @@ def probe(spec, current, provider, checked_at, downloader=download_once):
     except ValueError as error:
         return {**result, 'status': 'conversion_failed', 'reason': str(error)}
 
+    compare = compare_camara if provider == 'camara' else article_differences
+    try:
+        differences = compare(current, candidate)
+    except ValueError as error:
+        return {**result, 'status': 'comparison_failed', 'reason': str(error)}
+    if provider == 'camara':
+        result['differenceKinds'] = dict(Counter(item['kind'] for item in differences))
+        result['idsMatchedByRange'] = sum(item['matchedByRange'] for item in differences)
+
     return {**result, 'status': 'compared', 'semanticSha256': snapshot['semantic_sha256'],
-            'differences': article_differences(current, candidate),
+            'differences': differences,
             'structureDiffers': any(current[key] != candidate[key] for key in ('sections', 'introductions'))}
 
 
@@ -145,6 +156,9 @@ def main():
     for result in results:
         detail = result.get('reason') or f"{len(result['differences'])} artigos com diferenças para revisão"
         print(f"{result['id']}: {result['status']} — {detail}")
+        if 'differenceKinds' in result:
+            print(f"  {result['idsMatchedByRange']} identificadores associados a intervalos; "
+                  + json.dumps(result['differenceKinds'], sort_keys=True))
     return 0 if complete else 1
 
 

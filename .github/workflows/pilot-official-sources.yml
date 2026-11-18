@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/pilot-official-sources.yml'
       - 'scripts/pilot_official_sources.py'
+      - 'scripts/camara_comparison.py'
       - 'scripts/official_http.py'
       - 'scripts/import_official.py'
   workflow_dispatch:
