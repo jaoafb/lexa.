@@ -19,7 +19,7 @@ on:
       - 'tests/python/test_monitor.py'
       - 'tests/python/test_pilot_official_sources.py'
   schedule:
-    - cron: '40 9 * * *' # 06:40 em Brasília (UTC-3)
+    - cron: '40 9 * * *' # 06:40 em Brasília (UTC-3); o início agendado pelo GitHub é aproximado.
   workflow_dispatch:
     inputs:
       provider:
