@@ -53,8 +53,8 @@ try:
         expect(page.locator('#art-adct-1 .article-source')).to_contain_text('Câmara dos Deputados')
         page.locator('#art-adct-1 .article-copy summary').click()
         page.locator('#art-adct-1 [data-copy-text]').click()
-        clipboard = page.evaluate('navigator.clipboard.readText()')
-        assert documents['adct']['url'] in clipboard, clipboard[:200]
+        page.wait_for_function('async link => (await navigator.clipboard.readText()).includes(link)',
+                               arg=documents['adct']['url'])
 
         page.evaluate("localStorage.setItem('lexa-saved', JSON.stringify(['cf/6', 'cf/adct-1']))")
         page.goto(base + '#/favoritos')
