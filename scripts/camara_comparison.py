@@ -22,10 +22,10 @@ STATUS = re.compile(
     r'\)\s*[.;]?(?:\s+Vigência)?$', re.I,
 )
 STATUS_REFERENCE = re.compile(
-    r'^(Lei|Decreto[- ]Lei|Emenda Constitucional|Medida Provisória)\s+n[º°.]?\s*([0-9.]+)'
-    r'\s*,\s*de\s+(?:[0-9]{1,2}[/.][0-9]{1,2}[/.])?([0-9]{4})'
-    r'(?:,\s*publicad[oa] no DOU de [0-9]{1,2}[/.][0-9]{1,2}[/.][0-9]{4})?'
-    r'(?:,\s*em vigor (?:[0-9]+ (?:dias?|meses|anos?) após a publicação|'
+    r'^(?P<act>Lei|Decreto[- ]Lei|Emenda Constitucional|Medida Provisória)\s+n[º°.]?\s*(?P<number>[0-9.]+)'
+    r'\s*,\s*de\s+(?:(?P<day>[0-9]{1,2})[/.](?P<month>[0-9]{1,2})[/.])?(?P<year>[0-9]{4})'
+    r'(?:,\s*publicad[oa] no DOU de (?P<gazette>[0-9]{1,2}[/.][0-9]{1,2}[/.][0-9]{4}))?'
+    r'(?:,\s*em vigor (?P<delay>[0-9]+ (?:dias?|meses|anos?) após a publicação|'
     r'após [0-9]+ (?:dias?|meses|anos?) da publicação))?$',
     re.I,
 )
@@ -39,6 +39,17 @@ EDITORIAL_NOTE = re.compile(
     re.I,
 )
 STATUS_CHANGE = re.compile(r'\b(?:revogad[oa]s?|suprimid[oa]s?|vetad[oa]s?)\b', re.I)
+
+
+def citation_evidence(reference):
+    act = reference['act'].casefold()
+    if act == 'decreto lei':
+        act = 'decreto-lei'
+    identity = (act, reference['number'].replace('.', ''), reference['year'])
+    issued = (int(reference['day']), int(reference['month'])) if reference['day'] else None
+    gazette = tuple(map(int, re.split(r'[/.]', reference['gazette']))) if reference['gazette'] else None
+    delay = re.search(r'([0-9]+) (dia|mes|ano)', reference['delay'] or '', re.I)
+    return identity, issued, gazette, (int(delay[1]), delay[2].lower()) if delay else None
 
 
 def strip_editorial_tail(text):
@@ -78,8 +89,7 @@ def normalized_paragraph(text, *, range_header=False):
         if not status['reference']:
             return (marker, 'status:' + status['status'].lower() + 'o'), None
         if reference := STATUS_REFERENCE.fullmatch(status['reference']):
-            basis = (reference[1].casefold().replace(' ', '-'), reference[2].replace('.', ''), reference[3])
-            return (marker, 'status:' + status['status'].lower() + 'o'), basis
+            return (marker, 'status:' + status['status'].lower() + 'o'), citation_evidence(reference)
     return (marker, *body.split()), None
 
 
@@ -155,7 +165,9 @@ def compare_camara(current, candidate):
         old_active, old_history, old_references = signature(old_article)
         new_active, new_history, new_references = signature(new_article)
         conflicting_status_reference = any(
-            old_references[index] != new_references[index] for index in old_references.keys() & new_references.keys()
+            left != right and left is not None and right is not None
+            for index in old_references.keys() & new_references.keys()
+            for left, right in zip(old_references[index], new_references[index])
         )
         if old is None or new is None:
             kind = 'unmatched'

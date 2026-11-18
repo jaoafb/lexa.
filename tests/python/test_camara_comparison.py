@@ -48,6 +48,15 @@ class CamaraComparisonTests(unittest.TestCase):
         self.assertTrue(existing['conflictingStatusReference'])
         self.assertEqual(existing['kind'], 'text_review')
 
+    def test_different_declared_delays_for_the_same_act_need_review(self):
+        before = [article(2, 'Art. 2º (Revogado pela Lei nº 1, de 2000, em vigor 30 dias após a publicação)')]
+        after = [article(2, 'Art. 2º (Revogado pela Lei nº 1, de 2000, em vigor após 60 dias da publicação)')]
+
+        row = compare(before=before, after=after)[0]
+
+        self.assertTrue(row['conflictingStatusReference'])
+        self.assertEqual(row['kind'], 'text_review')
+
     def test_status_range_cannot_match_suffixed_articles_or_the_other_scope(self):
         before = [article('2-A', 'Art. 2-A. (Revogado)'), article(2, 'Art. 2º (Revogado)', scope='adct')]
         after = [article(1, 'Arts. 1 a 3. (Revogados)', range_end=3)]
