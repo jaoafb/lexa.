@@ -7,7 +7,7 @@ from pathlib import Path
 import re
 
 # Reuse byte decoding, evidence capture and marker parsing, not the old preparers.
-from extract_previous_html import ROOT, FILES, EvidenceHTML, decode, split_notes, spaces, unit, PENALTY
+from planalto_html import ROOT, FILES, EvidenceHTML, decode, split_notes, spaces, unit, PENALTY
 
 
 def read(path):
@@ -60,7 +60,7 @@ class StruckHTML(EvidenceHTML):
 
 def documentary_notes(raw):
     """Keep a recoverable prefix even when an editorial note has no closing )."""
-    from extract_previous_html import NOTE, BARE_NOTE
+    from planalto_html import NOTE, BARE_NOTE
     ranges=[]; notes=[]; warnings=[]; cursor=0
     while match:=NOTE.search(raw,cursor):
         depth=0; end=len(raw)

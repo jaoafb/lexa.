@@ -15,8 +15,8 @@ on:
       - 'data/history/sumulas.js'
       - 'sources/sumulas-manifest.json'
       - 'monitor/sources.json'
-  schedule:
-    - cron: '17 9 * * *' # 06:17 em São Paulo (UTC-3); horários do GitHub são aproximados.
+  # A conferência diária somente leitura está em pilot-official-sources.yml.
+  # Este fluxo de preparação de propostas continua disponível por push/manual.
   workflow_dispatch:
 
 permissions:

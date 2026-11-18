@@ -45,13 +45,15 @@ Em **Settings → Actions → General**, permita os actions utilizados e a cria�
 
 ### Conferência diária com a Câmara
 
-A conferência consulta Constituição/ADCT, Código Civil e CLT na Câmara e compara com a edição do Lexa. O GitHub Actions programa a consulta diária para 06:40 em Brasília na branch padrão e guarda os relatórios por 14 dias. O workflow tem permissão de leitura e inclui no resumo a quantidade de divergências por coleção. O artefato inclui um JSON de evidências e um relatório Markdown com as diferenças de texto da Constituição e do ADCT.
+A conferência diária consulta as 13 fontes configuradas do Planalto e, como fonte independente adicional, Constituição/ADCT, Código Civil e CLT na Câmara. Cada resultado é comparado diretamente à edição publicada no Lexa. Uma falha não apaga as demais verificações. O GitHub Actions programa a consulta para 06:40 em Brasília, tem somente permissão de leitura e guarda por 30 dias o relatório, as tentativas e os HTMLs efetivamente recebidos, identificados por SHA-256.
+
+O resultado diário é documental: não altera `data/`, `sources/`, `monitor/official/`, histórico ou estados de revisão; não cria PR e não publica. Uma diferença pode já existir entre as fontes e não significa necessariamente mudança ocorrida naquele dia. Execuções parciais falham visivelmente, mas preservam toda evidência já obtida no artefato.
 
 ```sh
-python3 scripts/pilot_official_sources.py --provider camara --output monitor/run/pilot-v2/camara.json
+python3 scripts/daily_collection.py --output monitor/run/daily/execucao-local
 ```
 
-Para diagnóstico das origens da Presidência, escolha `planalto`, `classico` ou `novo` na execução manual. A conferência resolve os HTMLs de Constituição e ADCT no índice oficial da Câmara e registra a URL e o hash do índice e de cada arquivo. Índice incompleto, links ambíguos ou fontes indisponíveis interrompem a comparação afetada e ficam registrados no relatório.
+Para diagnóstico isolado, a execução manual ainda aceita `camara`, `planalto`, `classico` ou `novo`. O modo `novo` continua sendo uma sondagem dos caminhos antigos no domínio novo, não uma integração confirmada com a navegação do portal. A conferência resolve os HTMLs de Constituição e ADCT no índice oficial da Câmara e registra a URL e o hash do índice e de cada arquivo. Índice incompleto, links ambíguos ou fontes indisponíveis interrompem apenas a comparação afetada e ficam registrados no relatório.
 
 Na comparação com a Câmara, cada linha mantém o identificador do Lexa e mostra o identificador efetivo em cada edição. Quando um artigo individual está coberto por um intervalo que declara expressamente revogação, supressão ou veto, a linha aponta para esse intervalo. A correspondência usa a mesma numeração e o mesmo escopo e os identificadores com letras são avaliados individualmente. Intervalos reconhecidos e sobrepostos bloqueiam a comparação.
 

@@ -7,7 +7,7 @@ from difflib import unified_diff
 from hashlib import sha256
 import json
 from pathlib import Path
-from urllib.parse import urljoin, urlsplit, urlunsplit
+from urllib.parse import urljoin, urlsplit
 from zoneinfo import ZoneInfo
 
 from camara_comparison import compare_camara
@@ -18,7 +18,7 @@ from camara_sources import (
 )
 from check_official_sources import ADCT, ROOT, fingerprint, parse_html, validate
 from import_official import article_version, convert, load_js, version_signature
-from official_http import ALLOWED_HOSTS, SourceFetchError, download_once
+from official_http import ALLOWED_HOSTS, SourceFetchError, download_once, public_url
 from review_constitution import PREVIEW_CHOICES, preview_choice
 
 PILOT_IDS = ('cf', 'civil', 'clt')
@@ -32,11 +32,6 @@ CAMARA_PATHS = {
     'civil': ('/legin/fed/lei/2002/lei-10406-10-janeiro-2002-432893-normaatualizada-pl.html',),
     'clt': ('/legin/fed/declei/1940-1949/decreto-lei-5452-1-maio-1943-415500-normaatualizada-pe.html',),
 }
-
-
-def public_url(url):
-    parts = urlsplit(url)
-    return urlunsplit((parts.scheme, parts.hostname or '', parts.path, '', ''))
 
 
 def article_differences(current, candidate):

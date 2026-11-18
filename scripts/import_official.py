@@ -15,9 +15,9 @@ import re
 
 from check_official_sources import fingerprint, validate, ADCT
 from official_http import check_url
+from official_html import ARTICLE_IDENTIFIER as ARTICLE
 
 ROOT = Path(__file__).resolve().parent.parent
-ARTICLE = re.compile(r'^Art\.?\s*(\d+(?:\.\d{3})*)(?:\s*[º°o])?((?:[-–][A-Z]{1,2}(?=[.\s:\-–]))*)\s*[.:-]?\s*')
 RANGE = re.compile(r'^Arts?\.\s*(\d+(?:\.\d{3})*)\.?\s+a\s+(\d+(?:\.\d{3})*)\.?\s*')
 HEADING = re.compile(r'^(PARTE\s+(?:GERAL|ESPECIAL|[IVX]+)\b|LIVRO\s+(?:[IVXLCDM]+|PRIMEIRO|SEGUNDO|TERCEIRO|COMPLEMENTAR)\b|(?:TÍTULO|SUBTÍTULO|CAPÍTULO|SEÇÃO|SUBSEÇÃO)\s+(?:[IVXLCDM]+|ÚNIC[OA])\b|DISPOSIÇÃO PRELIMINAR\b|DISPOSIÇÕES (?:FINAIS|GERAIS|TRANSITÓRIAS|COMUNS)\b)', re.I)
 UNIT = re.compile(r'^(?:§|Parágrafo\s+único|[IVXLCDM]+\s*[-–—]|[a-z]\))')

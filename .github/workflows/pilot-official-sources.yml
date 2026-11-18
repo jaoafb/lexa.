@@ -1,16 +1,23 @@
-name: Conferir legislação da Câmara
+name: Conferência diária da legislação
 
 on:
   pull_request:
     branches: [main]
     paths:
       - '.github/workflows/pilot-official-sources.yml'
+      - 'scripts/collection_transport.py'
+      - 'scripts/daily_collection.py'
       - 'scripts/pilot_official_sources.py'
       - 'scripts/camara_comparison.py'
       - 'scripts/camara_sources.py'
       - 'scripts/official_http.py'
+      - 'scripts/official_html.py'
+      - 'scripts/check_official_sources.py'
       - 'scripts/import_official.py'
-      - 'tests/python/test_camara*'
+      - 'monitor/sources.json'
+      - 'tests/python/test_daily_collection.py'
+      - 'tests/python/test_monitor.py'
+      - 'tests/python/test_pilot_official_sources.py'
   schedule:
     - cron: '40 9 * * *' # 06:40 em Brasília (UTC-3)
   workflow_dispatch:
@@ -18,32 +25,42 @@ on:
       provider:
         description: Fonte a consultar
         type: choice
-        default: camara
-        options: [camara, planalto, classico, novo]
+        default: daily
+        options: [daily, camara, planalto, classico, novo]
 
 permissions:
   contents: read
 
+concurrency:
+  group: lexa-daily-collection
+  cancel-in-progress: false
+
 jobs:
   compare:
-    if: github.event_name != 'pull_request' || (github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'pilot/coletor-v2')
     name: Consultar fonte oficial
     runs-on: ubuntu-24.04
-    timeout-minutes: 6
+    timeout-minutes: 25
     env:
-      PROBE_PROVIDER: ${{ inputs.provider || 'camara' }}
+      PROBE_PROVIDER: ${{ inputs.provider || 'daily' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - name: Validar e comparar os textos da fonte
-        run: python scripts/pilot_official_sources.py --provider "$PROBE_PROVIDER" --output "monitor/run/pilot-v2/$PROBE_PROVIDER.json" --summary "$GITHUB_STEP_SUMMARY"
+        run: |
+          if [ "$PROBE_PROVIDER" = daily ]; then
+            python scripts/daily_collection.py --output "monitor/run/daily/${{ github.run_id }}-${{ github.run_attempt }}" --summary "$GITHUB_STEP_SUMMARY"
+          else
+            python scripts/pilot_official_sources.py --provider "$PROBE_PROVIDER" --output "monitor/run/pilot-v2/$PROBE_PROVIDER.json" --summary "$GITHUB_STEP_SUMMARY"
+          fi
       - name: Guardar relatório e diferenças para revisão
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: conferencia-legislacao-${{ env.PROBE_PROVIDER }}-${{ github.run_id }}
-          path: monitor/run/pilot-v2/
+          path: |
+            monitor/run/daily/
+            monitor/run/pilot-v2/
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 30
