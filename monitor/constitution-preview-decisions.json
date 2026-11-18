@@ -1,5 +1,6 @@
 [
   {
+    "edition": "planalto",
     "reason": "O art. 5º da EC 19/1998 deu nova redação ao caput. O STF declarou a constitucionalidade da alteração na ADI 2135.",
     "sources": [
       {
@@ -19,6 +20,8 @@
     }
   },
   {
+    "edition": "planalto",
+    "revoked": true,
     "reason": "O art. 9º da EC 126/2022 determinou a revogação após a sanção da lei prevista no art. 6º. A LC 200/2023 foi sancionada em 30/08/2023 com esse fundamento.",
     "sources": [
       {
@@ -62,6 +65,130 @@
       "adct-114": {
         "lexaSha256": "18d6fdf42126f0bda0cd7c60f053742ce6fd59642465776ddd3d5b69a9534f19",
         "camaraSha256": "7df7b50493bbf50090ae753f99ea39790133b7e6c5ad20c34b5800e140c14e7d"
+      }
+    }
+  },
+  {
+    "edition": "planalto",
+    "reason": "No § 2º, a publicação original da ECR 2/1994 usa “pedidos escritos de informações”, no plural, como na edição do Lexa.",
+    "sources": [
+      {
+        "label": "ECR 2/1994, art. 2º",
+        "url": "https://www2.camara.leg.br/legin/fed/emecrv/1994/emendaconstitucionalderevisao-2-7-junho-1994-369752-publicacaooriginal-1-pl.html"
+      }
+    ],
+    "articles": {
+      "50": {
+        "lexaSha256": "a9562c9969a46e2eabf77c4d34b433745b10e61adc42c5706d22e972861412ba",
+        "camaraSha256": "9a55d72e4502d2d7a92bf51b90df03879b522d043c7b200334e1afb420dbcd0e"
+      }
+    }
+  },
+  {
+    "edition": "camara",
+    "reason": "A EC 45/2004 revogou o inciso IV do art. 36 e os §§ 1º a 3º do art. 111. A Câmara identifica expressamente esses dispositivos junto à nota de revogação.",
+    "sources": [
+      {
+        "label": "EC 45/2004, art. 9º",
+        "url": "https://www2.camara.leg.br/legin/fed/emecon/2004/emendaconstitucional-45-8-dezembro-2004-535274-publicacaooriginal-22987-pl.html"
+      }
+    ],
+    "articles": {
+      "36": {
+        "lexaSha256": "70958151a54b11674fb5114c59a58e911bb61012bac333c8e04a2148a8543921",
+        "camaraSha256": "b9b58b308cc548efca463fc7466fabab3ebedb30b25147edb024b178618e1711"
+      },
+      "111": {
+        "lexaSha256": "28784db4b65804464afcdfdff4ffde980e84f65ff36a5f690820aaac6688c28c",
+        "camaraSha256": "049d7b8ac93994fa5affef6bb92e8fa36f8e9cfa796b95360a81be467bba9e29"
+      }
+    }
+  },
+  {
+    "edition": "camara",
+    "reason": "O inciso III do parágrafo único usa “a atividade político-partidária” no texto promulgado. A EC 45/2004 acrescentou os incisos IV e V.",
+    "sources": [
+      {
+        "label": "Constituição promulgada, art. 95",
+        "url": "https://www2.camara.leg.br/legin/fed/consti/1988/constituicao-1988-5-outubro-1988-322142-publicacaooriginal-1-pl.html"
+      },
+      {
+        "label": "EC 45/2004, art. 1º",
+        "url": "https://www2.camara.leg.br/legin/fed/emecon/2004/emendaconstitucional-45-8-dezembro-2004-535274-publicacaooriginal-22987-pl.html"
+      }
+    ],
+    "articles": {
+      "95": {
+        "lexaSha256": "5f7857001c6353088c7c322594ab941ad785bfb08857fa58c8e4c5089d4edf11",
+        "camaraSha256": "522bfe06dc94235eb99458920a58170d94174a8b0bead0cba4f5b16657a64e5e"
+      }
+    }
+  },
+  {
+    "edition": "camara",
+    "reason": "A nota de revogação da Câmara identifica o artigo inteiro, conforme a EC 24/1999.",
+    "sources": [
+      {
+        "label": "EC 24/1999, art. 4º",
+        "url": "https://www2.camara.leg.br/legin/fed/emecon/1999/emendaconstitucional-24-9-dezembro-1999-372519-publicacaooriginal-1-pl.html"
+      }
+    ],
+    "articles": {
+      "117": {
+        "lexaSha256": "d60c7e3f472ec647c9664d391d91f818cf8ab5b630e0eb6931ee52e38bee1a5a",
+        "camaraSha256": "28d300fe8439e90c9345da1d974270c6df7459bad7dab9a3da473f7e8a49552f"
+      }
+    }
+  },
+  {
+    "edition": "camara",
+    "reason": "O caput no texto promulgado usa “como órgão auxiliar”, como na edição da Câmara.",
+    "sources": [
+      {
+        "label": "Constituição promulgada, art. 224",
+        "url": "https://www2.camara.leg.br/legin/fed/consti/1988/constituicao-1988-5-outubro-1988-322142-publicacaooriginal-1-pl.html"
+      }
+    ],
+    "articles": {
+      "224": {
+        "lexaSha256": "a3e8cf8aa51f3a06603e328c364f76900c7dd92d517a39b8720cf41838b1000a",
+        "camaraSha256": "af57017051ab7b2b5ee607bd3c75d4ff49f253d6aa5fca6172aafd6503e9a0df"
+      }
+    }
+  },
+  {
+    "edition": "camara",
+    "reason": "O art. 108 foi revogado pela EC 113/2021. A Câmara identifica o artigo junto à nota de revogação.",
+    "sources": [
+      {
+        "label": "EC 113/2021, art. 6º",
+        "url": "https://www2.camara.leg.br/legin/fed/emecon/2021/emendaconstitucional-113-8-dezembro-2021-792072-publicacaooriginal-164078-pl.html"
+      }
+    ],
+    "articles": {
+      "adct-108": {
+        "lexaSha256": "c547bc7ba0936f108ac1f511ff774f48e77c75ad8218228bc58332b5887b63ff",
+        "camaraSha256": "fa76cc5e17051c64e6c2c59c66003fcf0551d28e867851fb1cdff2ab938da62a"
+      }
+    }
+  },
+  {
+    "edition": "camara",
+    "reason": "A Câmara preserva a nota da ADI 7212. O STF declarou, com efeitos ex nunc, a inconstitucionalidade do art. 3º da EC 123/2022, que acrescentou o art. 120 ao ADCT.",
+    "sources": [
+      {
+        "label": "EC 123/2022, art. 3º",
+        "url": "https://www2.camara.leg.br/legin/fed/emecon/2022/emendaconstitucional-123-14-julho-2022-792985-publicacaooriginal-165734-pl.html"
+      },
+      {
+        "label": "STF, julgamento da ADI 7212",
+        "url": "https://portal.stf.jus.br/processos/detalhe.asp?incidente=6446436"
+      }
+    ],
+    "articles": {
+      "adct-120": {
+        "lexaSha256": "d3096197dc88ace1039a6491f72188cc1b929603a15941defba0da7761a8c784",
+        "camaraSha256": "aa5cde6899d86b92da286269432c1e5ec926e4fc5d9f782eca02ea8fdcae1511"
       }
     }
   }

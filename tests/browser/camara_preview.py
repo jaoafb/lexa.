@@ -68,6 +68,11 @@ try:
         page.goto(base + '#/cf/adct-110')
         expect(page.locator('#art-adct-110 .legal-unit:not(.deleted-paragraph)').first).to_contain_text('Revogado')
         expect(page.locator('#art-adct-110 .article-source a').first).to_have_attribute('href', planalto)
+        expect(page.locator('#art-adct-110 .legal-unit')).to_have_count(1)
+
+        page.goto(base + '#/cf/adct-120')
+        expect(page.locator('#art-adct-120')).to_contain_text('ADI nº 7.212')
+        expect(page.locator('#art-adct-120 .article-source a').first).to_have_attribute('href', documents['adct']['url'])
 
         page.evaluate("localStorage.setItem('lexa-saved', JSON.stringify(['cf/6', 'cf/adct-1']))")
         page.goto(base + '#/favoritos')

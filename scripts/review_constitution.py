@@ -11,9 +11,10 @@ import unicodedata
 from xml.etree import ElementTree
 from zipfile import ZipFile
 
-from camara_comparison import ARTICLE_PREFIX, STATUS_CHANGE, strip_editorial_tail, surviving_paragraphs
+from camara_comparison import (
+    ARTICLE_PREFIX, STATUS_CHANGE, matches_documented_pair, strip_editorial_tail, surviving_paragraphs,
+)
 from check_official_sources import ROOT
-from import_official import digest
 
 SENATE_URL = 'https://www2.senado.leg.br/jspui/bitstream/id/962911/6/CF88_EC141_ebook.epub'
 SENATE_SHA256 = '7b0daa4f848282b62062bdd8686e2865f4119e2cb09de774e2efd74f136651e6'
@@ -31,7 +32,8 @@ PLAIN_NOTE = re.compile(r'^\((?:Regulamento|Produção de efeitos?|Vigência)\)$
 TOKENS = re.compile(r'\w+|[^\s\w]')
 WORDS = re.compile(r'\w+')
 LABELS = {
-    'documentary_decision': ('Decisão documental', 'Texto do Planalto mantido na prévia com evidência documental'),
+    'documentary_planalto': ('Decisão documental · Planalto', 'O dispositivo conferido sustenta manter a edição do Lexa na prévia'),
+    'documentary_camara': ('Decisão documental · Câmara', 'O dispositivo conferido sustenta a escolha da Câmara na prévia'),
     'same_normalized': ('Mesmo texto', 'Mesmo texto após remover notas reconhecidas e normalizar tipografia'),
     'senate_matches_lexa': ('Senado e Lexa', 'Texto do Senado coincide com o Lexa nessa comparação'),
     'senate_matches_camara': ('Senado e Câmara', 'Texto do Senado coincide com a Câmara nessa comparação'),
@@ -102,7 +104,7 @@ def projection(paragraphs):
 
 def classify(change, senate, documented):
     if documented:
-        return 'documentary_decision'
+        return 'documentary_' + documented
     if change['matchedByRange'] or change['conflictingStatusReference']:
         return 'further_review'
     left, right = (change[side] for side in ('before', 'after'))
@@ -129,9 +131,7 @@ def document_decisions(comparison):
         matched = []
         for key, pair in decision['articles'].items():
             item = changes.get(key)
-            if (item and item['kind'] == 'text_review' and not item['matchedByRange']
-                    and item['beforeRangeEnd'] is None and item['afterRangeEnd'] is None
-                    and digest(item['before']) == pair['lexaSha256'] and digest(item['after']) == pair['camaraSha256']):
+            if item and matches_documented_pair(item, pair):
                 matched.append(key)
         if matched:
             yield decision, matched
@@ -139,7 +139,7 @@ def document_decisions(comparison):
 
 def write_review(path, comparison, senate):
     groups = list(document_decisions(comparison))
-    documented = {key for _, keys in groups for key in keys}
+    documented = {key: group['edition'] for group, keys in groups for key in keys}
     rows = []
     counts = Counter()
     history_count = 0
@@ -147,7 +147,7 @@ def write_review(path, comparison, senate):
         if change['kind'] != 'text_review':
             continue
         key = change['articleId']
-        classification = classify(change, senate.get(key), key in documented)
+        classification = classify(change, senate.get(key), documented.get(key))
         counts[classification] += 1
         scope = 'ADCT' if change['scope'] == 'adct' else 'CF'
         source_file, anchor, _ = senate.get(key, (None, None, None))
@@ -161,7 +161,8 @@ def write_review(path, comparison, senate):
     lines = [
         '# Conferência das divergências constitucionais', '',
         f'{len(rows)} divergências inicialmente classificadas como text_review. '
-        'Só as decisões com evidência documental registrada alteram a prévia. '
+        'As decisões documentais indicam a edição escolhida para a divergência específica. '
+        'A revisão do restante do artigo e do histórico é independente. '
         'As coincidências são indícios para revisão jurídica e se referem ao texto sem riscos, '
         'com notas editoriais reconhecidas e chamadas de rodapé retiradas da comparação. '
         'A pontuação é mantida na comparação de texto. '
@@ -176,11 +177,17 @@ def write_review(path, comparison, senate):
     ]
     for decision, keys in groups:
         ids = ', '.join(keys)
+        edition = {'planalto': 'Planalto', 'camara': 'Câmara'}[decision['edition']]
         links = ' · '.join(f'[{s["label"]}]({s["url"]})' for s in decision['sources'])
-        lines.extend([f'- **{ids}** — {decision["reason"]} {links}', ''])
+        lines.extend([f'- **{ids} · {edition}** — {decision["reason"]} {links}', ''])
     lines.extend(['## Resultado por artigo', '',
                   '| Artigo | Resultado | Diferença em trecho riscado | Localizador no EPUB do Senado |',
-                  '| --- | --- | --- | --- |', *rows, ''])
+                  '| --- | --- | --- | --- |', *rows, '',
+                  '## Reprodução', '',
+                  'Use o JSON original da comparação da Câmara e o EPUB identificado acima.', '',
+                  '```sh',
+                  'python scripts/review_constitution.py camara.json CF88_EC141_ebook.epub revisao.md',
+                  '```', ''])
     path.write_text('\n'.join(lines), encoding='utf-8')
     return counts
 

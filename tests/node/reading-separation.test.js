@@ -41,3 +41,13 @@ test('CP 215 e CF 7 conservam texto não riscado e excluem todas as redações r
   assert.ok(visible.paragraphs.every(p=>p.runs.every(r=>!r.deleted)));
  }
 });
+
+test('prévia exibe a nota de revogação conferida e mantém os trechos históricos na fonte',()=>{
+ const base=officialImported.cf.articles.find(article=>article.id==='adct-109');
+ const article={...base,documentSource:{revocationParagraph:1}};
+ const snapshot=JSON.stringify(article);
+ const visible=readingArticle({records:[]},'cf',article);
+ assert.equal(visible.paragraphs.length,1);
+ assert.match(visible.paragraphs[0].runs.map(run=>run.text).join('').trim(),/^\(Revogado pela Emenda Constitucional nº 126, de 2022\)$/);
+ assert.equal(JSON.stringify(article),snapshot);
+});

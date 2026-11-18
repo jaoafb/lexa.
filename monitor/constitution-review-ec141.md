@@ -1,6 +1,6 @@
 # Conferência das divergências constitucionais
 
-294 divergências inicialmente classificadas como text_review. Só as decisões com evidência documental registrada alteram a prévia. As coincidências são indícios para revisão jurídica e se referem ao texto sem riscos, com notas editoriais reconhecidas e chamadas de rodapé retiradas da comparação. A pontuação é mantida na comparação de texto. Em 148 artigos há também diferenças nos trechos riscados das fontes, indicadas na tabela. Essas diferenças exigem revisão própria.
+294 divergências inicialmente classificadas como text_review. As decisões documentais indicam a edição escolhida para a divergência específica. A revisão do restante do artigo e do histórico é independente. As coincidências são indícios para revisão jurídica e se referem ao texto sem riscos, com notas editoriais reconhecidas e chamadas de rodapé retiradas da comparação. A pontuação é mantida na comparação de texto. Em 148 artigos há também diferenças nos trechos riscados das fontes, indicadas na tabela. Essas diferenças exigem revisão própria.
 
 - Lexa (Planalto), SHA-256 semântico fb0bab559b54ad8fdc1bb37a32fb6201d1865033cd1006add5d3d971527714cc.
 - Câmara, SHA-256 semântico 6b262b82aa6bc5ea2850a2232d15e8bc0589801a8bf36e5bd3606d18b90a74b9.
@@ -8,18 +8,33 @@
 
 | Resultado | Critério | Artigos |
 | --- | --- | ---: |
-| Decisão documental | Texto do Planalto mantido na prévia com evidência documental | 9 |
+| Decisão documental · Planalto | O dispositivo conferido sustenta manter a edição do Lexa na prévia | 10 |
+| Decisão documental · Câmara | O dispositivo conferido sustenta a escolha da Câmara na prévia | 7 |
 | Mesmo texto | Mesmo texto após remover notas reconhecidas e normalizar tipografia | 76 |
 | Senado e Lexa | Texto do Senado coincide com o Lexa nessa comparação | 54 |
 | Senado e Câmara | Texto do Senado coincide com a Câmara nessa comparação | 37 |
 | Mesmas palavras | Mesmas palavras na mesma ordem, com diferença gráfica ou de pontuação | 22 |
-| Em aberto | Diferença de texto, de estrutura ou de marcação ainda aberta | 96 |
+| Em aberto | Diferença de texto, de estrutura ou de marcação ainda aberta | 88 |
 
 ## Decisões documentais aplicadas à prévia
 
-- **39** — O art. 5º da EC 19/1998 deu nova redação ao caput. O STF declarou a constitucionalidade da alteração na ADI 2135. [EC 19/1998, art. 5º](https://www2.camara.leg.br/legin/fed/emecon/1998/emendaconstitucional-19-4-junho-1998-372816-publicacaooriginal-1-pl.html) · [STF, ADI 2135](https://noticias.stf.jus.br/postsnoticias/stf-valida-emenda-que-flexibilizou-regime-de-contratacao-de-servidores-publicos/)
+- **39 · Planalto** — O art. 5º da EC 19/1998 deu nova redação ao caput. O STF declarou a constitucionalidade da alteração na ADI 2135. [EC 19/1998, art. 5º](https://www2.camara.leg.br/legin/fed/emecon/1998/emendaconstitucional-19-4-junho-1998-372816-publicacaooriginal-1-pl.html) · [STF, ADI 2135](https://noticias.stf.jus.br/postsnoticias/stf-valida-emenda-que-flexibilizou-regime-de-contratacao-de-servidores-publicos/)
 
-- **adct-106, adct-107, adct-109, adct-110, adct-111, adct-111-A, adct-112, adct-114** — O art. 9º da EC 126/2022 determinou a revogação após a sanção da lei prevista no art. 6º. A LC 200/2023 foi sancionada em 30/08/2023 com esse fundamento. [EC 126/2022, arts. 6º e 9º](https://www2.camara.leg.br/legin/fed/emecon/2022/emendaconstitucional-126-21-dezembro-2022-793528-publicacaooriginal-166603-pl.html) · [LC 200/2023, art. 1º](https://normas.leg.br/?urn=urn%3Alex%3Abr%3Afederal%3Alei.complementar%3A2023-08-30%3B200%402023-12-22)
+- **adct-106, adct-107, adct-109, adct-110, adct-111, adct-111-A, adct-112, adct-114 · Planalto** — O art. 9º da EC 126/2022 determinou a revogação após a sanção da lei prevista no art. 6º. A LC 200/2023 foi sancionada em 30/08/2023 com esse fundamento. [EC 126/2022, arts. 6º e 9º](https://www2.camara.leg.br/legin/fed/emecon/2022/emendaconstitucional-126-21-dezembro-2022-793528-publicacaooriginal-166603-pl.html) · [LC 200/2023, art. 1º](https://normas.leg.br/?urn=urn%3Alex%3Abr%3Afederal%3Alei.complementar%3A2023-08-30%3B200%402023-12-22)
+
+- **50 · Planalto** — No § 2º, a publicação original da ECR 2/1994 usa “pedidos escritos de informações”, no plural, como na edição do Lexa. [ECR 2/1994, art. 2º](https://www2.camara.leg.br/legin/fed/emecrv/1994/emendaconstitucionalderevisao-2-7-junho-1994-369752-publicacaooriginal-1-pl.html)
+
+- **36, 111 · Câmara** — A EC 45/2004 revogou o inciso IV do art. 36 e os §§ 1º a 3º do art. 111. A Câmara identifica expressamente esses dispositivos junto à nota de revogação. [EC 45/2004, art. 9º](https://www2.camara.leg.br/legin/fed/emecon/2004/emendaconstitucional-45-8-dezembro-2004-535274-publicacaooriginal-22987-pl.html)
+
+- **95 · Câmara** — O inciso III do parágrafo único usa “a atividade político-partidária” no texto promulgado. A EC 45/2004 acrescentou os incisos IV e V. [Constituição promulgada, art. 95](https://www2.camara.leg.br/legin/fed/consti/1988/constituicao-1988-5-outubro-1988-322142-publicacaooriginal-1-pl.html) · [EC 45/2004, art. 1º](https://www2.camara.leg.br/legin/fed/emecon/2004/emendaconstitucional-45-8-dezembro-2004-535274-publicacaooriginal-22987-pl.html)
+
+- **117 · Câmara** — A nota de revogação da Câmara identifica o artigo inteiro, conforme a EC 24/1999. [EC 24/1999, art. 4º](https://www2.camara.leg.br/legin/fed/emecon/1999/emendaconstitucional-24-9-dezembro-1999-372519-publicacaooriginal-1-pl.html)
+
+- **224 · Câmara** — O caput no texto promulgado usa “como órgão auxiliar”, como na edição da Câmara. [Constituição promulgada, art. 224](https://www2.camara.leg.br/legin/fed/consti/1988/constituicao-1988-5-outubro-1988-322142-publicacaooriginal-1-pl.html)
+
+- **adct-108 · Câmara** — O art. 108 foi revogado pela EC 113/2021. A Câmara identifica o artigo junto à nota de revogação. [EC 113/2021, art. 6º](https://www2.camara.leg.br/legin/fed/emecon/2021/emendaconstitucional-113-8-dezembro-2021-792072-publicacaooriginal-164078-pl.html)
+
+- **adct-120 · Câmara** — A Câmara preserva a nota da ADI 7212. O STF declarou, com efeitos ex nunc, a inconstitucionalidade do art. 3º da EC 123/2022, que acrescentou o art. 120 ao ADCT. [EC 123/2022, art. 3º](https://www2.camara.leg.br/legin/fed/emecon/2022/emendaconstitucional-123-14-julho-2022-792985-publicacaooriginal-165734-pl.html) · [STF, julgamento da ADI 7212](https://portal.stf.jus.br/processos/detalhe.asp?incidente=6446436)
 
 ## Resultado por artigo
 
@@ -51,9 +66,9 @@
 | CF · 33 | Senado e Lexa | — | 03_titulo_3.xhtml |
 | CF · 34 | Em aberto | Sim | 03_titulo_3.xhtml |
 | CF · 35 | Senado e Lexa | Sim | 03_titulo_3.xhtml |
-| CF · 36 | Em aberto | Sim | 03_titulo_3.xhtml |
+| CF · 36 | Decisão documental · Câmara | Sim | 03_titulo_3.xhtml |
 | CF · 37 | Em aberto | Sim | 03_titulo_3.xhtml |
-| CF · 39 | Decisão documental | Sim | 03_titulo_3.xhtml |
+| CF · 39 | Decisão documental · Planalto | Sim | 03_titulo_3.xhtml |
 | CF · 40 | Em aberto | Sim | 03_titulo_3.xhtml |
 | CF · 41 | Mesmo texto | Sim | 03_titulo_3.xhtml |
 | CF · 42 | Mesmas palavras | Sim | 03_titulo_3.xhtml |
@@ -61,7 +76,7 @@
 | CF · 47 | Senado e Lexa | — | 04_titulo_4.xhtml |
 | CF · 48 | Em aberto | Sim | 04_titulo_4.xhtml |
 | CF · 49 | Senado e Câmara | Sim | 04_titulo_4.xhtml |
-| CF · 50 | Em aberto | Sim | 04_titulo_4.xhtml |
+| CF · 50 | Decisão documental · Planalto | Sim | 04_titulo_4.xhtml |
 | CF · 52 | Mesmas palavras | Sim | 04_titulo_4.xhtml |
 | CF · 53 | Em aberto | Sim | 04_titulo_4.xhtml |
 | CF · 54 | Mesmas palavras | — | 04_titulo_4.xhtml |
@@ -84,7 +99,7 @@
 | CF · 92 | Senado e Câmara | Sim | 04_titulo_4.xhtml |
 | CF · 93 | Em aberto | Sim | 04_titulo_4.xhtml |
 | CF · 94 | Mesmas palavras | — | 04_titulo_4.xhtml |
-| CF · 95 | Em aberto | Sim | 04_titulo_4.xhtml |
+| CF · 95 | Decisão documental · Câmara | Sim | 04_titulo_4.xhtml |
 | CF · 96 | Em aberto | Sim | 04_titulo_4.xhtml |
 | CF · 97 | Em aberto | — | 04_titulo_4.xhtml |
 | CF · 98 | Em aberto | Sim | 04_titulo_4.xhtml |
@@ -99,12 +114,12 @@
 | CF · 107 | Em aberto | Sim | 04_titulo_4.xhtml |
 | CF · 109 | Senado e Câmara | Sim | 04_titulo_4.xhtml |
 | CF · 110 | Senado e Lexa | — | 04_titulo_4.xhtml |
-| CF · 111 | Em aberto | Sim | 04_titulo_4.xhtml |
+| CF · 111 | Decisão documental · Câmara | Sim | 04_titulo_4.xhtml |
 | CF · 111-A | Senado e Câmara | Sim | 04_titulo_4.xhtml |
 | CF · 114 | Mesmas palavras | Sim | 04_titulo_4.xhtml |
 | CF · 115 | Em aberto | Sim | 04_titulo_4.xhtml |
 | CF · 116 | Em aberto | Sim | 04_titulo_4.xhtml |
-| CF · 117 | Em aberto | Sim | 04_titulo_4.xhtml |
+| CF · 117 | Decisão documental · Câmara | Sim | 04_titulo_4.xhtml |
 | CF · 118 | Senado e Lexa | — | 04_titulo_4.xhtml |
 | CF · 119 | Senado e Lexa | — | 04_titulo_4.xhtml |
 | CF · 120 | Mesmas palavras | — | 04_titulo_4.xhtml |
@@ -200,7 +215,7 @@
 | CF · 220 | Senado e Lexa | — | 08_titulo_8.xhtml |
 | CF · 222 | Mesmo texto | Sim | 08_titulo_8.xhtml |
 | CF · 223 | Mesmas palavras | — | 08_titulo_8.xhtml |
-| CF · 224 | Em aberto | — | 08_titulo_8.xhtml |
+| CF · 224 | Decisão documental · Câmara | — | 08_titulo_8.xhtml |
 | CF · 225 | Em aberto | Sim | 08_titulo_8.xhtml |
 | CF · 226 | Senado e Câmara | Sim | 08_titulo_8.xhtml |
 | CF · 227 | Senado e Lexa | Sim | 08_titulo_8.xhtml |
@@ -283,24 +298,24 @@
 | ADCT · 103 | Senado e Lexa | — | 10_adct.xhtml |
 | ADCT · 104 | Senado e Lexa | Sim | 10_adct.xhtml |
 | ADCT · 105 | Em aberto | Sim | 10_adct.xhtml |
-| ADCT · 106 | Decisão documental | Sim | 10_adct.xhtml |
-| ADCT · 107 | Decisão documental | Sim | 10_adct.xhtml |
+| ADCT · 106 | Decisão documental · Planalto | Sim | 10_adct.xhtml |
+| ADCT · 107 | Decisão documental · Planalto | Sim | 10_adct.xhtml |
 | ADCT · 107-A | Senado e Câmara | Sim | 10_adct.xhtml |
-| ADCT · 108 | Em aberto | Sim | 10_adct.xhtml |
-| ADCT · 109 | Decisão documental | Sim | — |
-| ADCT · 110 | Decisão documental | Sim | — |
-| ADCT · 111 | Decisão documental | Sim | — |
-| ADCT · 111-A | Decisão documental | Sim | — |
-| ADCT · 112 | Decisão documental | Sim | — |
+| ADCT · 108 | Decisão documental · Câmara | Sim | 10_adct.xhtml |
+| ADCT · 109 | Decisão documental · Planalto | Sim | — |
+| ADCT · 110 | Decisão documental · Planalto | Sim | — |
+| ADCT · 111 | Decisão documental · Planalto | Sim | — |
+| ADCT · 111-A | Decisão documental · Planalto | Sim | — |
+| ADCT · 112 | Decisão documental · Planalto | Sim | — |
 | ADCT · 113 | Mesmo texto | — | 10_adct.xhtml |
-| ADCT · 114 | Decisão documental | Sim | 10_adct.xhtml |
+| ADCT · 114 | Decisão documental · Planalto | Sim | 10_adct.xhtml |
 | ADCT · 115 | Em aberto | Sim | 10_adct.xhtml |
 | ADCT · 116 | Em aberto | Sim | 10_adct.xhtml |
 | ADCT · 116-A | Mesmo texto | — | 10_adct.xhtml |
 | ADCT · 117 | Senado e Câmara | Sim | 10_adct.xhtml |
 | ADCT · 118 | Mesmo texto | — | 10_adct.xhtml |
 | ADCT · 119 | Mesmo texto | — | 10_adct.xhtml |
-| ADCT · 120 | Em aberto | — | 10_adct.xhtml |
+| ADCT · 120 | Decisão documental · Câmara | — | 10_adct.xhtml |
 | ADCT · 121 | Mesmo texto | — | 10_adct.xhtml |
 | ADCT · 122 | Mesmo texto | — | 10_adct.xhtml |
 | ADCT · 123 | Mesmo texto | — | 10_adct.xhtml |
@@ -319,3 +334,11 @@
 | ADCT · 136 | Mesmo texto | — | 10_adct.xhtml |
 | ADCT · 137 | Mesmo texto | — | 10_adct.xhtml |
 | ADCT · 138 | Mesmo texto | — | 10_adct.xhtml |
+
+## Reprodução
+
+Use o JSON original da comparação da Câmara e o EPUB identificado acima.
+
+```sh
+python scripts/review_constitution.py camara.json CF88_EC141_ebook.epub revisao.md
+```

@@ -10,13 +10,13 @@ from pathlib import Path
 from urllib.parse import urljoin, urlsplit, urlunsplit
 from zoneinfo import ZoneInfo
 
-from camara_comparison import compare_camara
+from camara_comparison import STATUS, compare_camara, matches_documented_pair
 from camara_sources import (
     CAMARA_HOST, CONSTITUTION_INDEX, LAW_15371_URL, constitution_links,
     publication_392_d, publication_kind, references_392_d,
 )
 from check_official_sources import ADCT, ROOT, fingerprint, parse_html, validate
-from import_official import article_version, convert, digest, load_js, version_signature
+from import_official import article_version, convert, load_js, version_signature
 from official_http import ALLOWED_HOSTS, SourceFetchError, download_once
 
 PILOT_IDS = ('cf', 'civil', 'clt')
@@ -100,7 +100,8 @@ def apply_constitution_preview_decisions(current, candidate, differences, decisi
     """Apply documentary decisions only to the pairs they were reviewed against."""
     previous = {article['id']: article for article in current['articles']}
     changes = {item['articleId']: item for item in differences}
-    held = {}
+    applied = {}
+    sources = {}
     for decision in decisions:
         for key, fingerprints in decision['articles'].items():
             if key not in previous:
@@ -108,24 +109,36 @@ def apply_constitution_preview_decisions(current, candidate, differences, decisi
             change = changes.get(key)
             if change is None:
                 continue
-            if (change['matchedByRange'] or change['beforeRangeEnd'] is not None
-                    or change['afterRangeEnd'] is not None or change['kind'] != 'text_review'
-                    or digest(change['before']) != fingerprints['lexaSha256']
-                    or digest(change['after']) != fingerprints['camaraSha256']):
+            if not matches_documented_pair(change, fingerprints):
                 raise ValueError(f'A divergência do art. {key} mudou desde a conferência documental.')
-            held[key] = {'reason': decision['reason'], 'sources': decision['sources']}
+            if decision['edition'] not in ('planalto', 'camara') or key in applied:
+                raise ValueError(f'Decisão documental inválida ou duplicada para o art. {key}.')
+            applied[key] = {field: decision[field] for field in ('edition', 'reason', 'sources')}
+            if decision['edition'] != 'planalto':
+                continue
+            source = {
+                **current['source'], 'provider': 'planalto',
+                'reviewNote': 'Redação do Planalto mantida após conferência documental para esta prévia.',
+            }
+            if decision.get('revoked'):
+                notes = []
+                for index, paragraph in enumerate(previous[key]['paragraphs']):
+                    text = ''.join(run['text'] for run in paragraph['runs'] if not run['deleted']).strip()
+                    if (status := STATUS.fullmatch(text)) and status['status'].lower() == 'revogad':
+                        notes.append(index)
+                if len(notes) != 1:
+                    raise ValueError(f'Nota de revogação não localizada de forma inequívoca para o art. {key}.')
+                source['revocationParagraph'] = notes[0]
+            sources[key] = source
 
     for index, article in enumerate(candidate['articles']):
         key = article['id']
-        if key in held:
+        if key in sources:
             candidate['articles'][index] = {
                 **previous[key], 'sectionId': article['sectionId'],
-                'documentSource': {
-                    **current['source'], 'provider': 'planalto',
-                    'reviewNote': 'Redação do Planalto mantida após conferência documental para esta prévia.',
-                },
+                'documentSource': sources[key],
             }
-    return held
+    return applied
 
 
 def probe(spec, current, provider, checked_at, downloader=download_once, *, constitution_preview=None):
@@ -195,7 +208,7 @@ def probe(spec, current, provider, checked_at, downloader=download_once, *, cons
                     'differences': differences}
         try:
             decisions = json.loads((ROOT / 'monitor/constitution-preview-decisions.json').read_text(encoding='utf-8'))
-            result['retainedForReview'] = apply_constitution_preview_decisions(current, candidate, differences, decisions)
+            result['documentaryDecisions'] = apply_constitution_preview_decisions(current, candidate, differences, decisions)
         except ValueError as error:
             return {**result, 'status': 'preview_review_changed', 'reason': str(error), 'differences': differences}
         date_label = datetime.fromisoformat(checked_at).astimezone(ZoneInfo('America/Sao_Paulo')).strftime('%d/%m/%Y')
@@ -242,8 +255,9 @@ def write_constitution_review(path, comparison):
             continue
         scope = 'ADCT' if difference['scope'] == 'adct' else 'Constituição'
         lines.extend([f"## {scope} · Art. {difference['articleId'].removeprefix('adct-')}", ''])
-        if decision := comparison.get('retainedForReview', {}).get(difference['articleId']):
-            lines.extend(['**Prévia com o texto do Planalto.** ' + decision['reason'], ''])
+        if decision := comparison.get('documentaryDecisions', {}).get(difference['articleId']):
+            edition = {'planalto': 'do Planalto', 'camara': 'da Câmara'}[decision['edition']]
+            lines.extend([f'**Prévia com o texto {edition}.** ' + decision['reason'], ''])
             lines.extend(f"- [{source['label']}]({source['url']})" for source in decision['sources'])
             lines.append('')
         delta = unified_diff(review_lines(difference['before']), review_lines(difference['after']),

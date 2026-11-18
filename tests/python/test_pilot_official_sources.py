@@ -91,13 +91,18 @@ class OfficialSourcePilotTests(unittest.TestCase):
         changes = compare_camara(current, candidate)
         change = changes[0]
         fingerprints = {'lexaSha256': digest(change['before']), 'camaraSha256': digest(change['after'])}
-        decisions = [{'reason': 'Conferência documental', 'sources': [],
+        decisions = [{'reason': 'Conferência documental', 'sources': [], 'edition': 'planalto',
                       'articles': {'39': fingerprints}}]
 
         updated = {'articles': [article('Art. 39 Alteração posterior.', 'new')]}
         with self.assertRaisesRegex(ValueError, 'mudou desde a conferência'):
             apply_constitution_preview_decisions(current, updated, compare_camara(current, updated), decisions)
         self.assertEqual(updated['articles'][0], article('Art. 39 Alteração posterior.', 'new'))
+
+        camara = apply_constitution_preview_decisions(current, candidate, changes,
+                                                      [{**decisions[0], 'edition': 'camara'}])
+        self.assertEqual(camara['39']['edition'], 'camara')
+        self.assertEqual(candidate['articles'][0], article('Art. 39 Outra redação.', 'new'))
 
         held = apply_constitution_preview_decisions(current, candidate, changes, decisions)
         self.assertEqual(list(held), ['39'])
