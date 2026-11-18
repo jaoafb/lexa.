@@ -1,0 +1,49 @@
+name: Conferir legislação da Câmara
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/pilot-official-sources.yml'
+      - 'scripts/pilot_official_sources.py'
+      - 'scripts/camara_comparison.py'
+      - 'scripts/camara_sources.py'
+      - 'scripts/official_http.py'
+      - 'scripts/import_official.py'
+      - 'tests/python/test_camara*'
+  schedule:
+    - cron: '40 9 * * *' # 06:40 em Brasília (UTC-3)
+  workflow_dispatch:
+    inputs:
+      provider:
+        description: Fonte a consultar
+        type: choice
+        default: camara
+        options: [camara, planalto, classico, novo]
+
+permissions:
+  contents: read
+
+jobs:
+  compare:
+    if: github.event_name != 'pull_request' || (github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'pilot/coletor-v2')
+    name: Consultar fonte oficial
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    env:
+      PROBE_PROVIDER: ${{ inputs.provider || 'camara' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validar e comparar os textos da fonte
+        run: python scripts/pilot_official_sources.py --provider "$PROBE_PROVIDER" --output "monitor/run/pilot-v2/$PROBE_PROVIDER.json" --summary "$GITHUB_STEP_SUMMARY"
+      - name: Guardar relatório e diferenças para revisão
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: conferencia-legislacao-${{ env.PROBE_PROVIDER }}-${{ github.run_id }}
+          path: monitor/run/pilot-v2/
+          if-no-files-found: error
+          retention-days: 14
