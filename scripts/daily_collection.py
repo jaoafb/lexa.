@@ -74,7 +74,8 @@ def main():
     print(f"{report['successfulComparisons']}/{report['expectedComparisons']} comparações concluídas.")
     for item in report['results']:
         if item['status'] != 'compared':
-            print(f"::warning title=Fonte {item['id']} ({item['provider']})::{item['status']}")
+            reason = item.get('reason') or item.get('errorType') or 'motivo não registrado'
+            print(f"::warning title=Fonte {item['id']} ({item['provider']})::{item['status']}: {reason}")
     # Source outages produce a partial, reviewable artifact. A programming failure
     # or a run without any valid comparison remains a failed automation.
     return exit_status(report)
