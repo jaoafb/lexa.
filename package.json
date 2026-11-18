@@ -8,6 +8,7 @@
     "build:pages": "npm run build",
     "dev": "npm start",
     "preview:legislative-history": "node scripts/preview-legislative-history.mjs",
+    "preview:camara": "node scripts/preview-camara.mjs",
     "start": "npm run build && node scripts/server.mjs",
     "test": "npm run build && node --test tests/node/*.test.js",
     "test:python": "python3 -m unittest discover -s tests -p 'test_*.py'"

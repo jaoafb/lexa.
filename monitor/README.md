@@ -45,19 +45,29 @@ Em **Settings → Actions → General**, permita os actions utilizados e a cria�
 
 ### Conferência diária com a Câmara
 
-A conferência consulta Constituição/ADCT, Código Civil e CLT na Câmara e compara com a edição do Lexa. O GitHub Actions programa a consulta diária para 06:40 em Brasília na branch padrão e guarda os relatórios por 14 dias. O workflow tem permissão de leitura e inclui no resumo a quantidade de divergências por coleção. O artefato inclui um JSON de evidências e um relatório Markdown com as diferenças de texto da Constituição e do ADCT.
+A conferência diária consulta as 13 fontes configuradas do Planalto e, como fonte independente adicional, Constituição/ADCT, Código Civil e CLT na Câmara. Cada resultado é comparado diretamente à edição publicada no Lexa. Uma falha não apaga as demais verificações. O GitHub Actions programa a consulta para 06:40 em Brasília, tem somente permissão de leitura e guarda por 30 dias o relatório, as tentativas e os HTMLs efetivamente recebidos, identificados por SHA-256.
+
+O resultado diário é documental: não altera `data/`, `sources/`, `monitor/official/`, histórico ou estados de revisão; não cria PR e não publica. Uma diferença pode já existir entre as fontes e não significa necessariamente mudança ocorrida naquele dia. Execuções parciais falham visivelmente, mas preservam toda evidência já obtida no artefato.
 
 ```sh
-python3 scripts/pilot_official_sources.py --provider camara --output monitor/run/pilot-v2/camara.json
+python3 scripts/daily_collection.py --output monitor/run/daily/execucao-local
 ```
 
-Para diagnóstico das origens da Presidência, escolha `planalto`, `classico` ou `novo` na execução manual. A conferência resolve os HTMLs de Constituição e ADCT no índice oficial da Câmara e registra a URL e o hash do índice e de cada arquivo. Índice incompleto, links ambíguos ou fontes indisponíveis interrompem a comparação afetada e ficam registrados no relatório.
+Para diagnóstico isolado, a execução manual ainda aceita `camara`, `planalto`, `classico` ou `novo`. O modo `novo` continua sendo uma sondagem dos caminhos antigos no domínio novo, não uma integração confirmada com a navegação do portal. A conferência resolve os HTMLs de Constituição e ADCT no índice oficial da Câmara e registra a URL e o hash do índice e de cada arquivo. Índice incompleto, links ambíguos ou fontes indisponíveis interrompem apenas a comparação afetada e ficam registrados no relatório.
 
 Na comparação com a Câmara, cada linha mantém o identificador do Lexa e mostra o identificador efetivo em cada edição. Quando um artigo individual está coberto por um intervalo que declara expressamente revogação, supressão ou veto, a linha aponta para esse intervalo. A correspondência usa a mesma numeração e o mesmo escopo e os identificadores com letras são avaliados individualmente. Intervalos reconhecidos e sobrepostos bloqueiam a comparação.
 
 O relatório mantém os textos integrais dos dois lados e registra divergências de redação, redações riscadas e diferenças nas referências de revogação que consegue identificar. A comparação usa uma projeção com marcadores e notas editoriais reconhecidos para indicar diferenças de apresentação. A projeção serve à triagem e os textos brutos, os identificadores publicados e o histórico continuam sendo as referências para a revisão da proposta.
 
 Os dispositivos com redação integralmente riscada e notas documentais de vigência encerrada entram como histórico preservado. Entradas compostas por marcadores explícitos de veto entram como registros documentais. No art. 392-D da CLT, a referência à Lei 15.371/2026 é conferida na publicação original e o relatório registra separadamente o texto publicado, a data da publicação e a cláusula expressa de vigência. Ao chegar à data declarada, a redação permanece pendente de revisão. A conferência entrega evidências para revisão jurídica antes de uma troca de fonte.
+
+### Prévia de Constituição e ADCT
+
+A aplicação das decisões documentais fica em `scripts/constitution_preview.py`, separada da coleta. A suíte essencial testa a prévia sem acesso à rede, em desktop e celular, usando o corpus versionado como fixture (não como captura da Câmara). A conferência ao vivo pode ser solicitada em **Verificar Lexa → Run workflow → camara_live**, sem depender do nome de uma branch. As verificações não homologam escolhas jurídicas.
+
+O modo `novo` é apenas uma sondagem dos caminhos antigos no domínio `portaldalegislacao.presidencia.gov.br`. Não comprova suporte à navegação ou à estrutura do portal novo. Falha de transferência não comprova ausência da lei nem descontinuação da fonte; a migração exige confirmar os endereços dos documentos e sua identidade antes de mudar as fontes de produção.
+
+`npm run preview:camara` gera e serve a prévia em `http://127.0.0.1:3014/#/cf`. Com `-- --build-only`, o comando gera o pacote em `test-results/camara-preview/site`. A candidata usa os dois documentos localizados no índice da Câmara, exige os mesmos identificadores por escopo e informa a fonte de cada documento no leitor e na cópia. O histórico publicado serve de referência na prévia. A comparação constitucional fica no mesmo diretório de teste, ao lado da candidata.
 
 ### Monitor diário
 

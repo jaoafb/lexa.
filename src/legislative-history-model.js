@@ -66,6 +66,11 @@ function normativeParagraph(paragraph){
 // an occurrence can be safely associated with a previous-wording record.
 // Never mutate source paragraphs or infer replacement wording.
 export function readingArticle(data,codeId,article){
+ const revocation=article.paragraphs[article.documentSource?.revocationParagraph];
+ if(revocation){
+  const runs=revocation.runs.filter(run=>!run.deleted);
+  return {...article,paragraphs:[{...revocation,runs}]};
+ }
  let changed=false;
  const paragraphs=article.paragraphs.flatMap(paragraph=>{
   if(!paragraph.runs.some(run=>run.deleted))return [paragraph];

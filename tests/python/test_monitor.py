@@ -57,6 +57,21 @@ class MonitorTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             validate(parse_html(raw.replace(b'Art. 2', b'Nota 2')), spec)
 
+    def test_documented_article_typo_and_ordinal_range_are_recognized_without_rewriting(self):
+        penal = {**SPEC, 'identity': 'Codigo Penal', 'last_article': 198, 'min_characters': 30}
+        raw = b'<h1>Codigo Penal</h1><p>Arts. 1 a 196.</p><p>Art. l97. Texto oficial.</p><p>Art. 198. Texto.</p>'
+        document = parse_html(raw)
+        self.assertEqual(validate(document, penal), {'main': 198})
+        self.assertEqual(document['blocks'][2][0]['text'], 'Art. l97. Texto oficial.')
+
+        improbidade = {**SPEC, 'identity': 'Improbidade', 'last_article': 6, 'min_characters': 25}
+        raw = 'Improbidade<p>Arts. 1º a 3º.</p><p>Arts. 4º a 6º (Revogados).</p>'.encode()
+        self.assertEqual(validate(parse_html(raw), improbidade), {'main': 6})
+
+        invalid = b'<h1>Codigo Penal</h1><p>Arts. 1 a 196.</p><p>Art. x97. Texto.</p><p>Art. 198. Texto.</p>'
+        with self.assertRaisesRegex(ValueError, '197'):
+            validate(parse_html(invalid), penal)
+
     def test_legacy_page_without_charset_and_struck_leading_whitespace(self):
         raw = ('<h1>Lei 10.406</h1><p><span> </span><strike> Art 1. Redação revogada.</strike></p>'
                '<p><strike> </strike> Art. 2º Ação de proteção.</p>'

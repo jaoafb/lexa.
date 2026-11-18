@@ -38,6 +38,15 @@ class CamaraComparisonTests(unittest.TestCase):
         self.assertEqual(second['after']['paragraphs'][0]['runs'][0]['text'], text)
         self.assertEqual((before, after), originals)
 
+    def test_ordinal_range_marker_is_structural_not_a_text_difference(self):
+        before = [article(n, f'Art. {n}º (Revogado)') for n in (4, 5, 6)]
+        after = [article(4, 'Arts. 4º a 6º (Revogados)', range_end=6)]
+
+        differences = compare(before=before, after=after)
+
+        self.assertEqual(len(differences), 3)
+        self.assertTrue(all(row['kind'] == 'range_representation' for row in differences))
+
     def test_range_and_individual_article_with_different_revocation_acts_need_review(self):
         before = [article(23, 'Art. 23. (Revogado pela Lei nº 10.000, de 2000)')]
         after = [article(22, 'Arts. 22 a 24. (Revogados pelo Decreto-Lei nº 926, de 10/10/1969)', range_end=24)]

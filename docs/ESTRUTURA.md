@@ -8,7 +8,11 @@ O Lexa é um site estático: o navegador recebe a interface e a base de leitura,
 | --- | --- | --- |
 | `src/index.html` | Estrutura da página | Editar a interface aqui |
 | `src/styles.css` | Aparência e responsividade | Editar estilos aqui |
-| `src/app.js` | Rotas e coordenação dos fluxos | Editar comportamentos aqui |
+| `src/app.js` | Rotas e coordenação dos fluxos | Conectar páginas e serviços, sem concentrar sua renderização |
+| `src/home-page.js` | Biblioteca, filtros e apresentação da busca global | Mantém estado da consulta e cancela respostas tardias ao sair |
+| `src/favorites-page.js` | Favoritos, filtro, remoção e desfazer | Recebe acesso ao estado compartilhado e persistência por funções |
+| `src/updates-page.js` | Apresentação do Histórico de versões | Reutiliza o comparador e os dados existentes |
+| `src/reader-preferences.js` | Tipografia e preservação da âncora nos ajustes | Recebe os elementos e o estado do painel do leitor |
 | `src/reader.js` e `src/reader-model.js` | Leitor, seleção e modelos reutilizados | Preservar paginação, IDs e hierarquia |
 | `src/search-index.js` e `src/library-search.js` | Índice compacto e busca global | Índices são derivados fielmente no build |
 | `src/collection-cache.js` | Conjunto limitado de leitores completos | Protege o leitor ativo |
@@ -32,6 +36,9 @@ O Lexa é um site estático: o navegador recebe a interface e a base de leitura,
 | `tests/fixtures/` | Dados de demonstração e corpora de regressão | Nem toda fixture integra o build; o lote público é controlado pelo manifesto |
 | `experiments/` | Evidências e snapshots ainda usados em reprodução/testes | Preservar dependências; execuções substituídas estão inventariadas em `PRESERVACAO.json` |
 | `scripts/` | Build, servidor, importação e coleta | Ferramentas de manutenção |
+| `scripts/amendments_verification.py` | Verificação independente do HTML de emendas com Chromium | Sem descoberta, coleta ou incorporação de propostas |
+| `scripts/collection_transport.py` | Transporte limitado e preservação imutável dos HTMLs recebidos | Não interpreta nem publica conteúdo |
+| `scripts/daily_collection.py` | Coordenação diária e relatório parcial das fontes | Compara com o corpus publicado; não cria candidatos ou PRs |
 | `tests/node/` | Testes da aplicação e publicação | Executados com `npm test` |
 | `tests/browser/` | Fluxos reais e benchmark Chromium | Executar com `scripts/run_browser_tests.py`; ver [baseline](BASELINE-DESEMPENHO.md) |
 | `tests/python/` | Testes dos importadores e monitores | Executados com `npm run test:python` |
@@ -57,6 +64,24 @@ As súmulas continuam com atualização manual; a rotina de coleta do STF perman
 Consulte [Manutenção](MANUTENCAO.md), o [monitor das legislações](../monitor/README.md) e o [monitor do STF](../monitor/stf/README.md) para procedimentos e limites das fontes. Não edite diretamente os dados gerados para corrigir o processamento: ajuste o importador e confira a saída e a procedência.
 
 ## Redações anteriores e preservação
+
+As primitivas compartilhadas do Planalto ficam em `scripts/planalto_html.py`:
+codificação, captura de evidências HTML, notas editoriais e marcadores de unidades.
+O extrator atual `extract_struck_html.py` usa esse módulo diretamente, sem importar
+o preparador anterior `extract_previous_html.py`. Este mantém os nomes importáveis
+para compatibilidade com ferramentas e testes existentes. A associação ao leitor
+continua em `present_struck_html.py`. Essa separação não modifica os critérios de
+extração, os textos ou os estados de revisão.
+
+`scripts/official_html.py` contém o parser puro, a decodificação da captura e o
+marcador de artigo reutilizado. O monitor e o importador mantêm seus nomes
+importáveis por compatibilidade, mas o extrator de riscados não importa mais
+esses fluxos nem o cliente HTTP. Testes verificam essa fronteira de dependências.
+
+Na conferência da Câmara, `camara_sources.py` identifica as fontes,
+`camara_comparison.py` compara as edições e `constitution_preview.py` aplica
+somente as decisões documentadas à prévia isolada. `pilot_official_sources.py`
+coordena a execução. A modularização não modifica essas decisões.
 
 O fluxo corrente e seus comandos estão em [REDACOES-ANTERIORES-SIMPLES.md](REDACOES-ANTERIORES-SIMPLES.md). `experiments/html-history/existing-records.json` é a base de 96 registros usada pelos testes dos fluxos anteriores; não é um log descartável. O snapshot `experiments/previous-wordings-simple/20261021-associations-corrected/` contém extração, apresentação e leitor de referência do lote corrente. `experiments/previous-wordings-release/20261021-associations/validation.json` é dependência do controle de integridade do build.
 

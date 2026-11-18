@@ -13,14 +13,16 @@ import {updateHistory} from '../data/history/legislation.js';
 import {sumulaUpdates} from '../data/history/sumulas.js';
 const root=new URL('../',import.meta.url);
 export const sha256=bytes=>createHash('sha256').update(bytes).digest('hex');
-export async function buildPackage({css:cssOverride,history:historyOverride,legislativeHistoryDemo=false,legislativeHistoryPilot=false,legislativeHistorySimple=false,previousWordingsCandidate=false,amendmentsCandidate=false,amendmentsDirectory}={}){
+export async function buildPackage({css:cssOverride,history:historyOverride,legislativeHistoryDemo=false,legislativeHistoryPilot=false,legislativeHistorySimple=false,previousWordingsCandidate=false,amendmentsCandidate=false,amendmentsDirectory,constitutionPreview}={}){
  const files=new Map();
  function asset(id,value){
   const bytes=JSON.stringify(value),sha=sha256(bytes),file=`data/${id}.${sha}.json`;
   files.set(file,bytes);return {file,sha256:sha,bytes:Buffer.byteLength(bytes)};
  }
  const history=historyOverride??[...updateHistory,...sumulaUpdates];
- const norms=[...catalog.map(code=>({...code,...(officialImported[code.id]||imported[code.id])})),...(officialSumulas.length?officialSumulas:sumulas)];
+ if(constitutionPreview&&constitutionPreview.source?.provider!=='camara')throw new Error('Fonte inválida para a prévia constitucional.');
+ const legislation=constitutionPreview?{...officialImported,cf:constitutionPreview}:officialImported;
+ const norms=[...catalog.map(code=>({...code,...(legislation[code.id]||imported[code.id])})),...(officialSumulas.length?officialSumulas:sumulas)];
  const metadata=norms.map(norm=>{
   const {articles,sections,introductions,...fields}=norm;
   return {...fields,articleCount:articles.length,...asset(norm.id,norm),search:asset('search-'+norm.id,createSearchIndex(norm)),changedArticleIds:[...new Set(history.filter(event=>event.codeId===norm.id).flatMap(event=>event.changes.map(change=>change.articleId)))]};
@@ -74,6 +76,7 @@ export const codes=collections.filter(code=>code.kind!=='sumulas');`);
  }
  if(css.toLowerCase().includes('</style'))throw new Error('Estilo incompatível com incorporação HTML');
  let html=slot(template,'<link rel="stylesheet" href="./styles.css">',`<style>${css}</style>`);
+ if(constitutionPreview)html=html.replace(/<body\b[^>]*>/,body=>body+'<aside class="reading-notice camara-preview-notice" role="note">Prévia de revisão · Constituição e ADCT da Câmara dos Deputados</aside>');
  const preloads=[...modules.keys()].filter(name=>!['amendments.js','amendment-reading.js'].includes(name)).map(name=>`<link rel="modulepreload" href="./${namespace+name}">`).join('');
  html=slot(html,'<script type="module" src="./app.js"></script>',preloads+`<script type="module" src="./${namespace}app.js"></script>`);
  return {html,files,manifest};

@@ -2,7 +2,7 @@
 
 import re
 
-from import_official import article_version, version_signature
+from import_official import article_version, digest, version_signature
 
 ARTICLE_PREFIX = re.compile(
     r'^Arts?\.\s*(?P<number>[0-9]+(?:\.[0-9]{3})*(?:[-–][A-Z]{1,2})?)'
@@ -13,7 +13,8 @@ UNIT_PREFIX = re.compile(
     r'^(?P<marker>§\s*[0-9]+[º°]?|Parágrafo único|[IVXLCDM]+(?=\s*[-–—]))\s*[.\-–—]?\s*'
 )
 NUMBER_RANGE = re.compile(
-    r'^Arts?\.\s*[0-9]+(?:\.[0-9]{3})*\.?\s+a\s*[0-9]+(?:\.[0-9]{3})*\.?\s+',
+    r'^Arts?\.\s*[0-9]+(?:\.[0-9]{3})*(?:\s*[º°o])?\.?\s+a\s+'
+    r'[0-9]+(?:\.[0-9]{3})*(?:\s*[º°o])?\.?\s+',
     re.I,
 )
 STATUS = re.compile(
@@ -151,6 +152,13 @@ def surviving_paragraphs(article):
         text for paragraph in article['paragraphs']
         if (text := ''.join(run['text'] for run in paragraph['runs'] if not run['deleted']).strip())
     ]
+
+
+def matches_documented_pair(change, fingerprints):
+    return (change['kind'] == 'text_review' and not change['matchedByRange']
+            and change['beforeRangeEnd'] is None and change['afterRangeEnd'] is None
+            and digest(change['before']) == fingerprints['lexaSha256']
+            and digest(change['after']) == fingerprints['camaraSha256'])
 
 
 def is_historical_annotation(text):

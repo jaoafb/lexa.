@@ -7,16 +7,19 @@ from difflib import unified_diff
 from hashlib import sha256
 import json
 from pathlib import Path
-from urllib.parse import urljoin, urlsplit, urlunsplit
+from urllib.parse import urljoin, urlsplit
+from zoneinfo import ZoneInfo
 
 from camara_comparison import compare_camara
+from constitution_preview import apply_constitution_preview_decisions
 from camara_sources import (
-    CAMARA_HOST, CONSTITUTION_INDEX, LAW_15371_URL, constitution_links,
+    CAMARA_HOST, CAMARA_PATHS, CONSTITUTION_INDEX, LAW_15371_URL, constitution_links,
     publication_392_d, publication_kind, references_392_d,
 )
 from check_official_sources import ADCT, ROOT, fingerprint, parse_html, validate
 from import_official import article_version, convert, load_js, version_signature
-from official_http import ALLOWED_HOSTS, SourceFetchError, download_once
+from official_http import ALLOWED_HOSTS, SourceFetchError, download_once, public_url
+from review_constitution import PREVIEW_CHOICES, preview_choice
 
 PILOT_IDS = ('cf', 'civil', 'clt')
 PROVIDERS = {
@@ -25,15 +28,6 @@ PROVIDERS = {
     'novo': 'portaldalegislacao.presidencia.gov.br',
     'camara': CAMARA_HOST,
 }
-CAMARA_PATHS = {
-    'civil': ('/legin/fed/lei/2002/lei-10406-10-janeiro-2002-432893-normaatualizada-pl.html',),
-    'clt': ('/legin/fed/declei/1940-1949/decreto-lei-5452-1-maio-1943-415500-normaatualizada-pe.html',),
-}
-
-
-def public_url(url):
-    parts = urlsplit(url)
-    return urlunsplit((parts.scheme, parts.hostname or '', parts.path, '', ''))
 
 
 def article_differences(current, candidate):
@@ -95,7 +89,7 @@ def combine_documents(documents):
     }
 
 
-def probe(spec, current, provider, checked_at, downloader=download_once):
+def probe(spec, current, provider, checked_at, downloader=download_once, *, constitution_preview=None):
     host = PROVIDERS[provider]
     allowed_hosts = ALLOWED_HOSTS if provider == 'planalto' else {host}
     result = {
@@ -154,6 +148,28 @@ def probe(spec, current, provider, checked_at, downloader=download_once):
         result['idsMatchedByRange'] = sum(item['matchedByRange'] for item in differences)
 
     status = 'evidence_failed' if 'evidenceFailure' in result else 'compared'
+    if constitution_preview is not None:
+        current_ids = {(article['scope'], article['id']) for article in current['articles']}
+        candidate_ids = {(article['scope'], article['id']) for article in candidate['articles']}
+        if len(candidate_ids) != len(candidate['articles']) or current_ids != candidate_ids:
+            return {**result, 'status': 'preview_identity_mismatch', 'reason': 'A prévia exige os mesmos identificadores por escopo.',
+                    'differences': differences}
+        try:
+            decisions = json.loads((ROOT / 'monitor/constitution-preview-decisions.json').read_text(encoding='utf-8'))
+            applied = apply_constitution_preview_decisions(current, candidate, differences, decisions)
+            result['documentaryDecisions'] = applied
+            result['previewDecisions'] = {item['articleId']: preview_choice(item, applied.get(item['articleId']))
+                                          for item in differences}
+        except ValueError as error:
+            return {**result, 'status': 'preview_review_changed', 'reason': str(error), 'differences': differences}
+        date_label = datetime.fromisoformat(checked_at).astimezone(ZoneInfo('America/Sao_Paulo')).strftime('%d/%m/%Y')
+        candidate['source'].update(
+            provider='camara', edition=f'Câmara dos Deputados · prévia de {date_label}',
+            reviewStatus='Edição de teste. Revisão jurídica pendente. O rodapé de cada artigo identifica a origem do texto exibido.',
+            documents={scope: {'url': resource['responses'][-1]['url'], 'rawSha256': resource['rawSha256']}
+                       for scope, resource in zip(('main', 'adct'), resources, strict=True)},
+        )
+        constitution_preview.write_text(json.dumps(candidate, ensure_ascii=False) + '\n', encoding='utf-8')
     return {**result, 'status': status, 'semanticSha256': snapshot['semantic_sha256'],
             'differences': differences,
             'structureDiffers': any(current[key] != candidate[key] for key in ('sections', 'introductions'))}
@@ -186,10 +202,17 @@ def write_constitution_review(path, comparison):
     lines = ['# Constituição e ADCT — divergências de texto', '',
              'Comparação para revisão. A linha removida mostra a edição do Lexa e a linha adicionada mostra a Câmara.', '']
     for difference in comparison['differences']:
-        if difference['kind'] != 'text_review':
+        if difference['kind'] != 'text_review' and difference['articleId'] not in comparison.get('previewDecisions', {}):
             continue
         scope = 'ADCT' if difference['scope'] == 'adct' else 'Constituição'
         lines.extend([f"## {scope} · Art. {difference['articleId'].removeprefix('adct-')}", ''])
+        if decision := comparison.get('documentaryDecisions', {}).get(difference['articleId']):
+            edition = {'planalto': 'do Planalto', 'camara': 'da Câmara'}[decision['edition']]
+            lines.extend([f'**Prévia com o texto {edition}.** ' + decision['reason'], ''])
+            lines.extend(f"- [{source['label']}]({source['url']})" for source in decision['sources'])
+            lines.append('')
+        elif choice := comparison.get('previewDecisions', {}).get(difference['articleId']):
+            lines.extend([f'**{PREVIEW_CHOICES[choice]}.**', ''])
         delta = unified_diff(review_lines(difference['before']), review_lines(difference['after']),
                              fromfile='Lexa', tofile='Câmara', n=1, lineterm='')
         lines.extend('    ' + line for line in delta)
@@ -202,11 +225,19 @@ def main():
     parser.add_argument('--provider', choices=PROVIDERS, required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--summary', type=Path)
+    parser.add_argument('--constitution-preview', type=Path, help='Gravar candidata de Constituição/ADCT para a prévia local.')
     args = parser.parse_args()
+    if args.constitution_preview:
+        if args.provider != 'camara' or args.constitution_preview.resolve() == args.output.resolve():
+            parser.error('A candidata requer a fonte Câmara e um arquivo distinto do relatório.')
+        args.constitution_preview.parent.mkdir(parents=True, exist_ok=True)
+        args.constitution_preview.unlink(missing_ok=True)
     specs = {spec['id']: spec for spec in json.loads((ROOT / 'monitor/sources.json').read_text(encoding='utf-8'))}
     current = load_js(ROOT / 'data/official/legislation.js', 'officialImported')
     checked_at = datetime.now(timezone.utc).isoformat(timespec='seconds')
-    results = [probe(specs[key], current[key], args.provider, checked_at) for key in PILOT_IDS]
+    ids = ('cf',) if args.constitution_preview else PILOT_IDS
+    results = [probe(specs[key], current[key], args.provider, checked_at, constitution_preview=args.constitution_preview)
+               for key in ids]
     complete = all(result['status'] == 'compared' for result in results)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps({

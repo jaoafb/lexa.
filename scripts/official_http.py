@@ -9,7 +9,7 @@ from email import policy
 from email.parser import BytesParser
 from email.utils import parsedate_to_datetime
 from pathlib import Path
-from urllib.parse import urljoin, urlsplit
+from urllib.parse import urljoin, urlsplit, urlunsplit
 import shutil
 import subprocess
 import tempfile
@@ -20,6 +20,11 @@ ALLOWED_HOSTS = {'www.planalto.gov.br', 'planalto.gov.br'}
 USER_AGENT = 'Mozilla/5.0 (compatible; Lexa/0.1; public legislation research)'
 TRANSIENT_CURL_CODES = {5, 6, 7, 18, 28, 52, 55, 56}
 TRANSIENT_HTTP_CODES = {408, 429, 500, 502, 503, 504}
+
+
+def public_url(url):
+    parts = urlsplit(url)
+    return urlunsplit((parts.scheme, parts.hostname or '', parts.path, '', ''))
 
 
 class SourceFetchError(RuntimeError):

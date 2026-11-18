@@ -8,6 +8,10 @@ on:
         description: Executar também a baseline (5 rodadas, CPU 4x; sem limite de tempo como critério de desempenho)
         type: boolean
         default: false
+      camara_live:
+        description: Conferir também a prévia com acesso ao portal da Câmara
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -33,6 +37,11 @@ jobs:
       - name: Testar aplicação e gerar pacote
         run: npm test
       - uses: ./.github/actions/setup-browser
+      - name: Testar prévia constitucional da Câmara
+        if: github.event_name == 'workflow_dispatch' && inputs.camara_live
+        run: |
+          npm run preview:camara -- --build-only
+          python tests/browser/camara_preview.py
       - name: Testar monitores, importadores e medições sem rede
         run: python -m unittest discover -s tests -p 'test_*.py'
       - name: Testar fluxos essenciais no Chromium
@@ -45,6 +54,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: verificacao-lexa-${{ github.run_id }}
-          path: test-results/
+          path: |
+            test-results/
+            !test-results/camara-preview/site/
+            !test-results/camara-preview/constitution.json
           if-no-files-found: warn
           retention-days: 14
