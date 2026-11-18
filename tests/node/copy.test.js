@@ -40,6 +40,18 @@ test('cópia de Constituição e ADCT indica o documento da edição corresponde
  }
 });
 
+test('cópia constitucional usa a fonte da redação preservada na prévia',()=>{
+ const cf=collections.find(c=>c.id==='cf');
+ const code={...cf,source:{...cf.source,provider:'camara',edition:'Câmara · Prévia',
+  documents:{main:{url:'https://example.test/camara'}}}};
+ const article={...articleById(code,'39'),documentSource:{...cf.source,reviewNote:'Redação preservada.'}};
+ const copied=articleCopyText(code,article,'https://example.test/#/cf/39');
+ assert.ok(copied.includes('Edição consultada no Lexa: '+cf.source.edition));
+ assert.ok(copied.includes('Fonte oficial para conferência: '+cf.source.url));
+ assert.match(copied,/Redação preservada\./);
+ assert.doesNotMatch(copied,/Câmara · Prévia|example\.test\/camara/);
+});
+
 test('súmula cancelada informa situação e copia o enunciado separado dos precedentes',()=>{
  const code=collections.find(c=>c.id==='sv'),article=articleById(code,'9');
  const output=articleCopyText(code,article,'https://example.test/#/sv/9');

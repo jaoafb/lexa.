@@ -4,7 +4,7 @@ import {readerModel} from './reader-model.js';
 import {articleCopyText} from './copy.js';
 import {sectionPath,unitKind} from './structure.js';
 import {normalize,searchArticles,articleById,articleLabel,parseReference,searchLibraryReferences} from './data.js';
-import {escape,number,codeHref,feedbackHref,collectionDate,editionSource,editionProviderName,sourcePanel,highlight,sectionHeadings} from './presentation.js';
+import {escape,number,codeHref,feedbackHref,collectionDate,editionSource,articleEditionSource,editionProviderName,sourcePanel,highlight,sectionHeadings} from './presentation.js';
 
 export function reader(code, requested, params, context) {
  const {app,state,readingPreferences,storageWrite,historyArticleIds,copyContent,toast}=context;
@@ -19,9 +19,9 @@ export function reader(code, requested, params, context) {
  let sourceScope=scope;
  const sourceForScope=editionSource(source,scope);
  function articleSource(article){
-  const document=editionSource(source,article.scope);
+  const document=articleEditionSource(source,article);
   if(['official_html','official_stf'].includes(document.kind)){
-   return `<a href="${escape(document.url||code.url)}" target="_blank" rel="noopener noreferrer">Fonte: ${editionProviderName(document,code)} ↗</a> · coleta em ${collectionDate(document)}`;
+   return `<a href="${escape(document.url||code.url)}" target="_blank" rel="noopener noreferrer">Fonte: ${editionProviderName(document,code)} ↗</a> · coleta em ${collectionDate(document)}${document.reviewNote?' · '+escape(document.reviewNote):''}`;
   }
   return escape(document.filename)+' · página '+article.page+(article.endPage&&article.endPage!==article.page?' a '+article.endPage:'');
  }

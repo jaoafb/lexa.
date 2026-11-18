@@ -16,7 +16,7 @@ from camara_sources import (
     publication_392_d, publication_kind, references_392_d,
 )
 from check_official_sources import ADCT, ROOT, fingerprint, parse_html, validate
-from import_official import article_version, convert, load_js, version_signature
+from import_official import article_version, convert, digest, load_js, version_signature
 from official_http import ALLOWED_HOSTS, SourceFetchError, download_once
 
 PILOT_IDS = ('cf', 'civil', 'clt')
@@ -96,6 +96,38 @@ def combine_documents(documents):
     }
 
 
+def apply_constitution_preview_decisions(current, candidate, differences, decisions):
+    """Apply documentary decisions only to the pairs they were reviewed against."""
+    previous = {article['id']: article for article in current['articles']}
+    changes = {item['articleId']: item for item in differences}
+    held = {}
+    for decision in decisions:
+        for key, fingerprints in decision['articles'].items():
+            if key not in previous:
+                raise ValueError(f'Artigo ausente na base de revisão: {key}.')
+            change = changes.get(key)
+            if change is None:
+                continue
+            if (change['matchedByRange'] or change['beforeRangeEnd'] is not None
+                    or change['afterRangeEnd'] is not None or change['kind'] != 'text_review'
+                    or digest(change['before']) != fingerprints['lexaSha256']
+                    or digest(change['after']) != fingerprints['camaraSha256']):
+                raise ValueError(f'A divergência do art. {key} mudou desde a conferência documental.')
+            held[key] = {'reason': decision['reason'], 'sources': decision['sources']}
+
+    for index, article in enumerate(candidate['articles']):
+        key = article['id']
+        if key in held:
+            candidate['articles'][index] = {
+                **previous[key], 'sectionId': article['sectionId'],
+                'documentSource': {
+                    **current['source'], 'provider': 'planalto',
+                    'reviewNote': 'Redação do Planalto mantida após conferência documental para esta prévia.',
+                },
+            }
+    return held
+
+
 def probe(spec, current, provider, checked_at, downloader=download_once, *, constitution_preview=None):
     host = PROVIDERS[provider]
     allowed_hosts = ALLOWED_HOSTS if provider == 'planalto' else {host}
@@ -161,10 +193,15 @@ def probe(spec, current, provider, checked_at, downloader=download_once, *, cons
         if len(candidate_ids) != len(candidate['articles']) or current_ids != candidate_ids:
             return {**result, 'status': 'preview_identity_mismatch', 'reason': 'A prévia exige os mesmos identificadores por escopo.',
                     'differences': differences}
+        try:
+            decisions = json.loads((ROOT / 'monitor/constitution-preview-decisions.json').read_text(encoding='utf-8'))
+            result['retainedForReview'] = apply_constitution_preview_decisions(current, candidate, differences, decisions)
+        except ValueError as error:
+            return {**result, 'status': 'preview_review_changed', 'reason': str(error), 'differences': differences}
         date_label = datetime.fromisoformat(checked_at).astimezone(ZoneInfo('America/Sao_Paulo')).strftime('%d/%m/%Y')
         candidate['source'].update(
             provider='camara', edition=f'Câmara dos Deputados · prévia de {date_label}',
-            reviewStatus='Edição de teste. Revisão jurídica pendente.',
+            reviewStatus='Edição de teste. Revisão jurídica pendente. O rodapé de cada artigo identifica a origem do texto exibido.',
             documents={scope: {'url': resource['responses'][-1]['url'], 'rawSha256': resource['rawSha256']}
                        for scope, resource in zip(('main', 'adct'), resources, strict=True)},
         )
@@ -205,6 +242,10 @@ def write_constitution_review(path, comparison):
             continue
         scope = 'ADCT' if difference['scope'] == 'adct' else 'Constituição'
         lines.extend([f"## {scope} · Art. {difference['articleId'].removeprefix('adct-')}", ''])
+        if decision := comparison.get('retainedForReview', {}).get(difference['articleId']):
+            lines.extend(['**Prévia com o texto do Planalto.** ' + decision['reason'], ''])
+            lines.extend(f"- [{source['label']}]({source['url']})" for source in decision['sources'])
+            lines.append('')
         delta = unified_diff(review_lines(difference['before']), review_lines(difference['after']),
                              fromfile='Lexa', tofile='Câmara', n=1, lineterm='')
         lines.extend('    ' + line for line in delta)
@@ -223,6 +264,7 @@ def main():
         if args.provider != 'camara' or args.constitution_preview.resolve() == args.output.resolve():
             parser.error('A candidata requer a fonte Câmara e um arquivo distinto do relatório.')
         args.constitution_preview.parent.mkdir(parents=True, exist_ok=True)
+        args.constitution_preview.unlink(missing_ok=True)
     specs = {spec['id']: spec for spec in json.loads((ROOT / 'monitor/sources.json').read_text(encoding='utf-8'))}
     current = load_js(ROOT / 'data/official/legislation.js', 'officialImported')
     checked_at = datetime.now(timezone.utc).isoformat(timespec='seconds')

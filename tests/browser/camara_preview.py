@@ -56,6 +56,19 @@ try:
         page.wait_for_function('async link => (await navigator.clipboard.readText()).includes(link)',
                                arg=documents['adct']['url'])
 
+        page.goto(base + '#/cf/39')
+        expect(page.locator('#art-39 .legal-unit:not(.deleted-paragraph)').first).to_contain_text('conselho de política')
+        expect(page.locator('#art-39 .article-source')).to_contain_text('Planalto')
+        planalto = page.locator('#art-39 .article-source a').first.get_attribute('href')
+        assert 'planalto.gov.br' in planalto
+        page.locator('#art-39 .article-copy summary').click()
+        page.locator('#art-39 [data-copy-text]').click()
+        page.wait_for_function('async link => (await navigator.clipboard.readText()).includes(link)', arg=planalto)
+
+        page.goto(base + '#/cf/adct-110')
+        expect(page.locator('#art-adct-110 .legal-unit:not(.deleted-paragraph)').first).to_contain_text('Revogado')
+        expect(page.locator('#art-adct-110 .article-source a').first).to_have_attribute('href', planalto)
+
         page.evaluate("localStorage.setItem('lexa-saved', JSON.stringify(['cf/6', 'cf/adct-1']))")
         page.goto(base + '#/favoritos')
         page.reload()

@@ -1,0 +1,202 @@
+"""Corroborate a recorded Constituição/ADCT comparison with the Senado EC 141 ePub."""
+
+import argparse
+from collections import Counter
+from hashlib import sha256
+from io import BytesIO
+import json
+from pathlib import Path
+import re
+import unicodedata
+from xml.etree import ElementTree
+from zipfile import ZipFile
+
+from camara_comparison import ARTICLE_PREFIX, STATUS_CHANGE, strip_editorial_tail, surviving_paragraphs
+from check_official_sources import ROOT
+from import_official import digest
+
+SENATE_URL = 'https://www2.senado.leg.br/jspui/bitstream/id/962911/6/CF88_EC141_ebook.epub'
+SENATE_SHA256 = '7b0daa4f848282b62062bdd8686e2865f4119e2cb09de774e2efd74f136651e6'
+SENATE_DOCUMENTS = [*(f'OEBPS/0{i}_titulo_{i}.xhtml' for i in range(1, 10)), 'OEBPS/10_adct.xhtml']
+TYPOGRAPHY = str.maketrans({
+    '–': '-', '—': '-', '“': '"', '”': '"', '‘': "'", '’': "'", '\u00ad': None, '\u200b': None,
+})
+AMENDMENT_NOTE = re.compile(
+    r'^(?:(?:["“”]caput["“”]|caput) d[oa] (?:artigo|parágrafo|inciso)|'
+    r'artigo|parágrafo|inciso|alínea|item) (?:com (?:nova )?redação dada|acrescid[oa]|incluíd[oa]|'
+    r'renumerad[oa]) pel[oa] Emenda Constitucional\b[^()]*$', re.I,
+)
+CAVEAT = re.compile(r'\b(?:inconstitucion\w*|vigência encerrada|suspens\w*|modula\w*)\b', re.I)
+PLAIN_NOTE = re.compile(r'^\((?:Regulamento|Produção de efeitos?|Vigência)\)$', re.I)
+TOKENS = re.compile(r'\w+|[^\s\w]')
+WORDS = re.compile(r'\w+')
+LABELS = {
+    'documentary_decision': ('Decisão documental', 'Texto do Planalto mantido na prévia com evidência documental'),
+    'same_normalized': ('Mesmo texto', 'Mesmo texto após remover notas reconhecidas e normalizar tipografia'),
+    'senate_matches_lexa': ('Senado e Lexa', 'Texto do Senado coincide com o Lexa nessa comparação'),
+    'senate_matches_camara': ('Senado e Câmara', 'Texto do Senado coincide com a Câmara nessa comparação'),
+    'same_words': ('Mesmas palavras', 'Mesmas palavras na mesma ordem, com diferença gráfica ou de pontuação'),
+    'further_review': ('Em aberto', 'Diferença de texto, de estrutura ou de marcação ainda aberta'),
+}
+
+
+def element_text(element):
+    if element.get('role') == 'doc-noteref':
+        return ''
+    if 'Ordinal' in element.get('class', '').split() and element.text in ('o', 'a') and not len(element):
+        return {'o': 'º', 'a': 'ª'}[element.text]
+    return (element.text or '') + ''.join(element_text(child) + (child.tail or '') for child in element)
+
+
+def senate_articles(path):
+    raw = path.read_bytes()
+    if sha256(raw).hexdigest() != SENATE_SHA256:
+        raise ValueError('O EPUB não corresponde à edição do Senado registrada para a conferência.')
+    articles = {}
+    with ZipFile(BytesIO(raw)) as archive:
+        for name in SENATE_DOCUMENTS:
+            prefix = 'adct-' if name.endswith('10_adct.xhtml') else ''
+            current = None
+            for paragraph in ElementTree.fromstring(archive.read(name)).findall('.//{*}p'):
+                style = paragraph.get('class')
+                if style == 'Texto_Tx-artigo':
+                    line = ' '.join(element_text(paragraph).split())
+                    match = ARTICLE_PREFIX.match(line)
+                    if not match:
+                        raise ValueError(f'Identificador não reconhecido na edição do Senado: {line}')
+                    current = prefix + match['number'].replace('–', '-')
+                    if current in articles:
+                        raise ValueError(f'Identificador repetido na edição do Senado: {current}')
+                    articles[current] = (name, paragraph.get('id'), [line])
+                elif style == 'Texto_Tx-PIA------I--a-' and current:
+                    articles[current][2].append(element_text(paragraph))
+    return articles
+
+
+def strip_notes(text):
+    text = ' '.join(text.split())
+    if PLAIN_NOTE.fullmatch(text):
+        return ''
+    # Keep explicit judicial/status caveats, including those embedded in editorial notes.
+    if CAVEAT.search(text) or STATUS_CHANGE.search(text):
+        return text
+    while text:
+        before = text
+        note = re.search(r'\s+\(([^()]*)\)$', text)
+        if note and AMENDMENT_NOTE.fullmatch(note[1]):
+            text = text[:note.start()]
+        else:
+            text = strip_editorial_tail(text)
+        if before == text:
+            return text
+    return text
+
+
+def projection(paragraphs):
+    content = ' '.join(strip_notes(line) for line in paragraphs)
+    content = unicodedata.normalize('NFC', content).translate(TYPOGRAPHY)
+    content = re.sub(r'(?<=\d)\s*[º°](?!\w)', 'º', content)
+    content = re.sub(r'\bn\s*[º°](?=\s*\d)', 'nº ', content)
+    return tuple(TOKENS.findall(content)), tuple(WORDS.findall(content.lower()))
+
+
+def classify(change, senate, documented):
+    if documented:
+        return 'documentary_decision'
+    if change['matchedByRange'] or change['conflictingStatusReference']:
+        return 'further_review'
+    left, right = (change[side] for side in ('before', 'after'))
+    if left['title'] != right['title']:
+        return 'further_review'
+    lexa, lexa_words = projection(surviving_paragraphs(left))
+    camara, camara_words = projection(surviving_paragraphs(right))
+    independent = projection(senate[2])[0] if senate else None
+    if lexa == camara:
+        return 'same_normalized'
+    if lexa == independent:
+        return 'senate_matches_lexa'
+    if camara == independent:
+        return 'senate_matches_camara'
+    if lexa_words == camara_words:
+        return 'same_words'
+    return 'further_review'
+
+
+def document_decisions(comparison):
+    decisions = json.loads((ROOT / 'monitor/constitution-preview-decisions.json').read_text(encoding='utf-8'))
+    changes = {item['articleId']: item for item in comparison['differences']}
+    for decision in decisions:
+        matched = []
+        for key, pair in decision['articles'].items():
+            item = changes.get(key)
+            if (item and item['kind'] == 'text_review' and not item['matchedByRange']
+                    and item['beforeRangeEnd'] is None and item['afterRangeEnd'] is None
+                    and digest(item['before']) == pair['lexaSha256'] and digest(item['after']) == pair['camaraSha256']):
+                matched.append(key)
+        if matched:
+            yield decision, matched
+
+
+def write_review(path, comparison, senate):
+    groups = list(document_decisions(comparison))
+    documented = {key for _, keys in groups for key in keys}
+    rows = []
+    counts = Counter()
+    history_count = 0
+    for change in comparison['differences']:
+        if change['kind'] != 'text_review':
+            continue
+        key = change['articleId']
+        classification = classify(change, senate.get(key), key in documented)
+        counts[classification] += 1
+        scope = 'ADCT' if change['scope'] == 'adct' else 'CF'
+        source_file, anchor, _ = senate.get(key, (None, None, None))
+        locator = source_file.removeprefix('OEBPS/') if source_file else '—'
+        if anchor:
+            locator += '#' + anchor
+        history_count += change['historicalDiffers']
+        history = 'Sim' if change['historicalDiffers'] else '—'
+        rows.append(f'| {scope} · {key.removeprefix("adct-")} | {LABELS[classification][0]} | {history} | {locator} |')
+
+    lines = [
+        '# Conferência das divergências constitucionais', '',
+        f'{len(rows)} divergências inicialmente classificadas como text_review. '
+        'Só as decisões com evidência documental registrada alteram a prévia. '
+        'As coincidências são indícios para revisão jurídica e se referem ao texto sem riscos, '
+        'com notas editoriais reconhecidas e chamadas de rodapé retiradas da comparação. '
+        'A pontuação é mantida na comparação de texto. '
+        f'Em {history_count} artigos há também diferenças nos trechos riscados das fontes, indicadas na tabela. '
+        'Essas diferenças exigem revisão própria.', '',
+        f'- Lexa (Planalto), SHA-256 semântico {comparison["currentEdition"]["sha256"]}.',
+        f'- Câmara, SHA-256 semântico {comparison["semanticSha256"]}.',
+        f'- Senado, [ePub compilado até a EC 141]({SENATE_URL}), SHA-256 {SENATE_SHA256}.', '',
+        '| Resultado | Critério | Artigos |', '| --- | --- | ---: |',
+        *(f'| {label} | {criterion} | {counts[key]} |' for key, (label, criterion) in LABELS.items()), '',
+        '## Decisões documentais aplicadas à prévia', '',
+    ]
+    for decision, keys in groups:
+        ids = ', '.join(keys)
+        links = ' · '.join(f'[{s["label"]}]({s["url"]})' for s in decision['sources'])
+        lines.extend([f'- **{ids}** — {decision["reason"]} {links}', ''])
+    lines.extend(['## Resultado por artigo', '',
+                  '| Artigo | Resultado | Diferença em trecho riscado | Localizador no EPUB do Senado |',
+                  '| --- | --- | --- | --- |', *rows, ''])
+    path.write_text('\n'.join(lines), encoding='utf-8')
+    return counts
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('comparison', type=Path)
+    parser.add_argument('senate_epub', type=Path)
+    parser.add_argument('output', type=Path)
+    args = parser.parse_args()
+    report = json.loads(args.comparison.read_text(encoding='utf-8'))
+    comparison = next(result for result in report['results'] if result['id'] == 'cf')
+    if report['provider'] != 'camara' or comparison['status'] != 'compared':
+        parser.error('É necessária uma comparação constitucional concluída com a Câmara.')
+    print(dict(write_review(args.output, comparison, senate_articles(args.senate_epub))))
+
+
+if __name__ == '__main__':
+    main()

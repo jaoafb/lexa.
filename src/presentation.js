@@ -20,6 +20,10 @@ export function editionSource(source,scope){
  return source.documents?.[scope]?{...source,...source.documents[scope]}:source;
 }
 
+export function articleEditionSource(source,article){
+ return article.documentSource||editionSource(source,article.scope);
+}
+
 export function editionProviderName(source,code){
  if(source.provider==='camara'||code.kind==='amendment')return 'Câmara dos Deputados';
  return code.kind==='sumulas'?'STF':'Planalto';

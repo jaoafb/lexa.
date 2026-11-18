@@ -1,0 +1,68 @@
+[
+  {
+    "reason": "O art. 5º da EC 19/1998 deu nova redação ao caput. O STF declarou a constitucionalidade da alteração na ADI 2135.",
+    "sources": [
+      {
+        "label": "EC 19/1998, art. 5º",
+        "url": "https://www2.camara.leg.br/legin/fed/emecon/1998/emendaconstitucional-19-4-junho-1998-372816-publicacaooriginal-1-pl.html"
+      },
+      {
+        "label": "STF, ADI 2135",
+        "url": "https://noticias.stf.jus.br/postsnoticias/stf-valida-emenda-que-flexibilizou-regime-de-contratacao-de-servidores-publicos/"
+      }
+    ],
+    "articles": {
+      "39": {
+        "lexaSha256": "ead0b88e9b7114f84b7bafcadc0385cd6755ce20559daf59c88b9b44216f3c47",
+        "camaraSha256": "e01aac1bea7e3c851c62c6f372042f0d030ff2dca3bfe5604d7f262309590251"
+      }
+    }
+  },
+  {
+    "reason": "O art. 9º da EC 126/2022 determinou a revogação após a sanção da lei prevista no art. 6º. A LC 200/2023 foi sancionada em 30/08/2023 com esse fundamento.",
+    "sources": [
+      {
+        "label": "EC 126/2022, arts. 6º e 9º",
+        "url": "https://www2.camara.leg.br/legin/fed/emecon/2022/emendaconstitucional-126-21-dezembro-2022-793528-publicacaooriginal-166603-pl.html"
+      },
+      {
+        "label": "LC 200/2023, art. 1º",
+        "url": "https://normas.leg.br/?urn=urn%3Alex%3Abr%3Afederal%3Alei.complementar%3A2023-08-30%3B200%402023-12-22"
+      }
+    ],
+    "articles": {
+      "adct-106": {
+        "lexaSha256": "545ee99d8f661ffc6e74c02e30b9b1ddde0422321a76076da73e3309bf9002de",
+        "camaraSha256": "179749e9db91c3f5f0c46230ea4dea898d3d205ee3e25c70d6b5bd72c3e694ef"
+      },
+      "adct-107": {
+        "lexaSha256": "278938a817112ccdb3415da5b6a02950639db88188989a388da5f778ac932051",
+        "camaraSha256": "f27c09d9ba18e159143b805ce56a1e3f301a2708a719cca41ac28d55c96f104a"
+      },
+      "adct-109": {
+        "lexaSha256": "640f9aa3df26593c2bad9b2f0223ee1aae37ad634e8396ccd6ecbe6cda3565bc",
+        "camaraSha256": "f1a1b40bd6cd0c9788949eff3510ae045f7b589a13c2a7eb5e8be5c8925ecaf0"
+      },
+      "adct-110": {
+        "lexaSha256": "d7be1ebd907b37079cde00c7af10192865e87e8760d6a2345af95cd53be4b2b7",
+        "camaraSha256": "1d9f981f0cdfdd7a1011bd98b1ea1ec54eb631c4eacd3f720fb55a4ec0786717"
+      },
+      "adct-111": {
+        "lexaSha256": "a5a18d9e6d805a64daedbbbfe6e4d6b57e9f0cabcbe15b0273437fa8157f5342",
+        "camaraSha256": "d46ba8c45965b2caa221aa0c6a17f4299a9706f1285a32ef170ae5fceba8a98f"
+      },
+      "adct-111-A": {
+        "lexaSha256": "6f1a0be25d3902b83761c9af6fc9ba7666e12287821f62b40fc8f04faa7e1a1c",
+        "camaraSha256": "40b91805efc9d8ae04081093129578de9a1b065f985776babff84ce1a1259902"
+      },
+      "adct-112": {
+        "lexaSha256": "f8da2c35f5f879dad428b30bfe90e1a5f7cc34b5e6457211e7a1b68c300a37f6",
+        "camaraSha256": "7bb7d0ecc61cccf26d25abfda6446d266ce15c492236e6282f665f4219563a02"
+      },
+      "adct-114": {
+        "lexaSha256": "18d6fdf42126f0bda0cd7c60f053742ce6fd59642465776ddd3d5b69a9534f19",
+        "camaraSha256": "7df7b50493bbf50090ae753f99ea39790133b7e6c5ad20c34b5800e140c14e7d"
+      }
+    }
+  }
+]

@@ -3,7 +3,13 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
 
-from pilot_official_sources import ROOT, combine_documents, load_js, parse_html, probe, write_constitution_review
+from camara_comparison import compare_camara
+from import_official import digest
+from pilot_official_sources import (
+    ROOT, apply_constitution_preview_decisions, combine_documents, load_js, parse_html, probe,
+    write_constitution_review,
+)
+from review_constitution import projection
 
 
 class OfficialSourcePilotTests(unittest.TestCase):
@@ -71,3 +77,40 @@ class OfficialSourcePilotTests(unittest.TestCase):
         self.assertIn('    -[RISCADO] Redação anterior. [/RISCADO]', text)
         self.assertIn('    +Texto da Câmara.', text)
         self.assertNotIn('Art. 3', text)
+
+    def test_preview_retains_source_and_versions_only_for_reviewed_pair(self):
+        def article(text, section):
+            return {'id': '39', 'scope': 'main', 'sectionId': section, 'paragraphs': [
+                {'runs': [{'text': text, 'deleted': False}]},
+            ]}
+
+        current = {'source': {'url': 'https://example.test/planalto'},
+                   'articles': [article('Art. 39 Redação em uso.', 'old')]}
+        candidate = {'source': {'url': 'https://example.test/camara'},
+                     'articles': [article('Art. 39 Outra redação.', 'new')]}
+        changes = compare_camara(current, candidate)
+        change = changes[0]
+        fingerprints = {'lexaSha256': digest(change['before']), 'camaraSha256': digest(change['after'])}
+        decisions = [{'reason': 'Conferência documental', 'sources': [],
+                      'articles': {'39': fingerprints}}]
+
+        updated = {'articles': [article('Art. 39 Alteração posterior.', 'new')]}
+        with self.assertRaisesRegex(ValueError, 'mudou desde a conferência'):
+            apply_constitution_preview_decisions(current, updated, compare_camara(current, updated), decisions)
+        self.assertEqual(updated['articles'][0], article('Art. 39 Alteração posterior.', 'new'))
+
+        held = apply_constitution_preview_decisions(current, candidate, changes, decisions)
+        self.assertEqual(list(held), ['39'])
+        self.assertEqual(candidate['articles'][0]['paragraphs'], current['articles'][0]['paragraphs'])
+        self.assertEqual(candidate['articles'][0]['sectionId'], 'new')
+        self.assertEqual(candidate['articles'][0]['documentSource']['url'], current['source']['url'])
+        self.assertEqual(current['articles'][0]['sectionId'], 'old')
+        self.assertEqual(changes[0]['after']['paragraphs'], article('Art. 39 Outra redação.', 'new')['paragraphs'])
+
+    def test_constitution_projection_keeps_punctuation_and_status(self):
+        before = ['Art. 1º Vale, sim.']
+        with_note = ['Art. 1° Vale, sim. (Redação dada pela Emenda Constitucional nº 8, de 1995)']
+        with_status = ['Art. 1º Vale, sim. (Vide ADI 100, dispositivo declarado inconstitucional)']
+        self.assertEqual(projection(before), projection(with_note))
+        self.assertNotEqual(projection(before)[0], projection(['Art. 1º Vale sim.'])[0])
+        self.assertNotEqual(projection(before), projection(with_status))
