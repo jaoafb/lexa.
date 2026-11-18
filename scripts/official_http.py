@@ -59,7 +59,7 @@ def response_headers(raw):
     return BytesParser(policy=policy.default).parsebytes(last + b'\n\n')
 
 
-def download_once(url, allowed_hosts=None):
+def download_once(url, allowed_hosts=None, *, observe_response=None):
     check_url(url, allowed_hosts)
     curl = shutil.which('curl')
     if not curl:
@@ -89,6 +89,8 @@ def download_once(url, allowed_hosts=None):
                 raise SourceFetchError('Cliente HTTP retornou um status inválido.')
             status = int(result.stdout.strip())
             metadata = response_headers(headers.read_bytes())
+            if observe_response is not None:
+                observe_response(current, status, metadata.get('Location'))
             if status in {301, 302, 303, 307, 308}:
                 location = metadata.get('Location')
                 if not location or hop == 3:

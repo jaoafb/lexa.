@@ -1,0 +1,42 @@
+name: Piloto do coletor de normas
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/pilot-official-sources.yml'
+      - 'scripts/pilot_official_sources.py'
+      - 'scripts/official_http.py'
+      - 'scripts/import_official.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  compare:
+    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'pilot/coletor-v2')
+    name: Consultar fonte oficial (${{ matrix.provider }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    strategy:
+      fail-fast: false
+      matrix:
+        provider: [planalto, classico, novo]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validar e comparar os textos da fonte
+        env:
+          PROBE_PROVIDER: ${{ matrix.provider }}
+        run: python scripts/pilot_official_sources.py --provider "$PROBE_PROVIDER" --output "monitor/run/pilot-v2/$PROBE_PROVIDER.json"
+      - name: Guardar relatório e diferenças para revisão
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: piloto-coletor-${{ matrix.provider }}-${{ github.run_id }}
+          path: monitor/run/pilot-v2/
+          if-no-files-found: error
+          retention-days: 14

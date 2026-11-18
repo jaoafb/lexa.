@@ -43,6 +43,18 @@ Em **Settings → Actions → General**, permita os actions utilizados e a cria�
 
 ## Execução local
 
+### Piloto dos portais da Presidência
+
+O piloto consulta Constituição/ADCT, Código Civil e CLT pela origem cadastrada, pelo Portal Clássico e pelo Novo Portal. Ele testa o caminho cadastrado em cada domínio, valida o texto e compara os artigos com o leitor atual. O relatório registra respostas HTTP, hashes, cobertura e diferenças para revisão. A execução retorna falha quando a fonte não permite comparar as três normas. Os arquivos gerados ficam em `monitor/run/` no workflow do piloto, que tem permissão de leitura.
+
+```sh
+python3 scripts/pilot_official_sources.py --provider novo --output monitor/run/pilot-v2/novo.json
+```
+
+Use `classico` ou `planalto` para testar as demais origens. O resultado se refere àquele ambiente de execução e horário. Diferenças de texto, marcações e estrutura exigem revisão antes de uma migração.
+
+### Monitor diário
+
 Node.js 22+, Python 3.12+ (biblioteca padrão) e curl:
 
 ```sh

@@ -27,10 +27,10 @@ def text_of(runs):
     return ''.join(run['text'] for run in runs).strip()
 
 
-def convert(spec, snapshot):
+def convert(spec, snapshot, *, allowed_hosts=None):
     if snapshot.get('schema_version') != 1 or snapshot.get('id') != spec['id'] or snapshot.get('source_url') != spec['url']:
         raise ValueError('Identidade ou versão da referência inválida: '+spec['id'])
-    check_url(snapshot['source_url'])
+    check_url(snapshot['source_url'], allowed_hosts)
     document = snapshot['document']
     if fingerprint(document) != snapshot['semantic_sha256']:
         raise ValueError('Hash da referência não corresponde ao conteúdo: '+spec['id'])
