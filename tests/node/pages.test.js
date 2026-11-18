@@ -81,3 +81,17 @@ test('alterar só CSS altera o shell e preserva nomes e bytes de todos os JSON',
  assert.deepEqual([...before.files],[...after.files]);
  assert.deepEqual(before.manifest,after.manifest);
 });
+
+test('prévia constitucional tem aviso e preserva o histórico e demais coleções',async()=>{
+ const {buildPackage}=await import('../../scripts/build.mjs');
+ const {officialImported}=await import('../../data/official/legislation.js');
+ const cf=officialImported.cf;
+ const constitutionPreview={...cf,source:{...cf.source,provider:'camara'}};
+ const before=await buildPackage();
+ const preview=await buildPackage({constitutionPreview});
+ assert.match(preview.html,/Prévia de revisão · Constituição e ADCT da Câmara dos Deputados/);
+ assert.notEqual(preview.manifest.collections.find(code=>code.id==='cf').file,before.manifest.collections.find(code=>code.id==='cf').file);
+ assert.deepEqual(preview.manifest.history,before.manifest.history);
+ assert.deepEqual(preview.manifest.collections.filter(code=>code.id!=='cf'),before.manifest.collections.filter(code=>code.id!=='cf'));
+ await assert.rejects(stagePages(undefined,{constitutionPreview}),/não pode substituir o pacote de publicação/);
+});

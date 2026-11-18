@@ -1,0 +1,44 @@
+name: Verificar prévia constitucional da Câmara
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/preview-camara.yml'
+      - 'scripts/preview-camara.mjs'
+      - 'scripts/pilot_official_sources.py'
+      - 'scripts/build*.mjs'
+      - 'src/**'
+      - 'tests/browser/camara_preview.py'
+
+permissions:
+  contents: read
+
+jobs:
+  preview:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'preview/camara-constituicao'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Gerar prévia isolada de Constituição e ADCT
+        run: npm run preview:camara -- --build-only
+      - uses: ./.github/actions/setup-browser
+      - name: Testar links, fonte, favoritos e histórico no leitor
+        run: python tests/browser/camara_preview.py
+      - name: Guardar comparação constitucional
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: revisao-constitucional-${{ github.run_id }}
+          path: |
+            test-results/camara-preview/camara.json
+            test-results/camara-preview/camara-revisao-constitucional.md
+          if-no-files-found: warn
+          retention-days: 14

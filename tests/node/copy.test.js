@@ -30,6 +30,16 @@ test('ADCT conserva identidade e revogação agrupada conserva o intervalo',()=>
  assert.match(articleCopyText(ctn,grouped,'https://example.test/#/ctn/'+grouped.id),/Arts\. 52 a 58/);
 });
 
+test('cópia de Constituição e ADCT indica o documento da edição correspondente',()=>{
+ const cf=collections.find(c=>c.id==='cf');
+ const documents={main:{url:'https://example.test/constituicao'},adct:{url:'https://example.test/adct'}};
+ const code={...cf,source:{...cf.source,provider:'camara',documents}};
+ for(const [id,scope] of [['1','main'],['adct-1','adct']]){
+  const output=articleCopyText(code,articleById(code,id),'https://example.test/#/cf/'+id);
+  assert.ok(output.includes('Fonte oficial para conferência: '+documents[scope].url));
+ }
+});
+
 test('súmula cancelada informa situação e copia o enunciado separado dos precedentes',()=>{
  const code=collections.find(c=>c.id==='sv'),article=articleById(code,'9');
  const output=articleCopyText(code,article,'https://example.test/#/sv/9');

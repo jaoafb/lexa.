@@ -1,10 +1,11 @@
 import {articleLabel} from './data.js';
+import {editionSource} from './presentation.js';
 
 export function articleCopyText(code,article,permalink){
  const hasDeleted=article.paragraphs.some(p=>p.runs.some(run=>run.deleted));
  const paragraphs=article.paragraphs.map(p=>p.runs.map(run=>run.deleted?`[Trecho riscado na fonte: ${run.text}]`:run.text).join(''));
  const status={cancelled:'Cancelada',pending:'Pendente de publicação',suspended:'Suspensa'}[article.status];
- const source=code.source;
+ const source=editionSource(code.source,article.scope);
  const lines=[`${code.name} — ${articleLabel(article)}`,code.law,''];
  if(status)lines.push(`Situação indicada na edição: ${status}.`,'');
  if(article.title)lines.push(article.title,'');

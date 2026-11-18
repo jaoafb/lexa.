@@ -59,6 +59,10 @@ O relatório mantém os textos integrais dos dois lados e registra divergências
 
 Os dispositivos com redação integralmente riscada e notas documentais de vigência encerrada entram como histórico preservado. Entradas compostas por marcadores explícitos de veto entram como registros documentais. No art. 392-D da CLT, a referência à Lei 15.371/2026 é conferida na publicação original e o relatório registra separadamente o texto publicado, a data da publicação e a cláusula expressa de vigência. Ao chegar à data declarada, a redação permanece pendente de revisão. A conferência entrega evidências para revisão jurídica antes de uma troca de fonte.
 
+### Prévia de Constituição e ADCT
+
+`npm run preview:camara` gera e serve a prévia em `http://127.0.0.1:3014/#/cf`. Com `-- --build-only`, o comando gera o pacote em `test-results/camara-preview/site`. A candidata usa os dois documentos localizados no índice da Câmara, exige os mesmos identificadores por escopo e informa a fonte de cada documento no leitor e na cópia. O histórico publicado serve de referência na prévia. A comparação constitucional fica no mesmo diretório de teste, ao lado da candidata.
+
 ### Monitor diário
 
 Node.js 22+, Python 3.12+ (biblioteca padrão) e curl:

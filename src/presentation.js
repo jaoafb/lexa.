@@ -16,6 +16,15 @@ export function feedbackHref(code,article) {
 
 export const collectionDate = source => new Intl.DateTimeFormat('pt-BR',{timeZone:'America/Sao_Paulo',dateStyle:'short'}).format(new Date(source.capturedAt));
 
+export function editionSource(source,scope){
+ return source.documents?.[scope]?{...source,...source.documents[scope]}:source;
+}
+
+export function editionProviderName(source,code){
+ if(source.provider==='camara'||code.kind==='amendment')return 'Câmara dos Deputados';
+ return code.kind==='sumulas'?'STF':'Planalto';
+}
+
 export function sourcePanel(source) {
  if(['official_html','official_stf'].includes(source.kind))return `<p>${escape(source.coverage)}</p><p>${escape(source.reviewStatus)}</p><p>Coleta da fonte oficial: ${collectionDate(source)}. Novas versões são propostas para revisão no GitHub.</p><p><a href="${escape(source.url)}" target="_blank" rel="noopener noreferrer">Consultar página oficial ↗</a></p><p class="source-hash">SHA-256 do texto extraído: ${escape(source.sha256)}</p>`;
  return `<p>${escape(source.coverage)}</p><p>${escape(source.reviewStatus)}</p><p>Arquivo: ${escape(source.filename)} · ${escape(source.pages)} páginas.</p><p><a href="./${escape(source.pdf)}" target="_blank" rel="noopener">Abrir PDF fornecido ↗</a> <small>(disponível ao executar o site completo)</small></p><p class="source-hash">SHA-256: ${escape(source.sha256)}</p>`;
