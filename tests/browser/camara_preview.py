@@ -14,6 +14,10 @@ preview = root / 'test-results/camara-preview/site'
 manifest = json.loads((preview / 'catalog.json').read_text(encoding='utf-8'))
 constitution = next(code for code in manifest['collections'] if code['id'] == 'cf')
 documents = constitution['source']['documents']
+search_index = json.loads((preview / constitution['search']['file']).read_text(encoding='utf-8'))
+indexed = {article['id']: article['fields'] for article in search_index['articles']}
+assert not any('Sem que haja interrupção no pagamento' in field[1] for field in indexed['100'])
+assert not any('Os empréstimos de que trata o inciso III' in field[1] for field in indexed['adct-101'])
 
 
 class Handler(SimpleHTTPRequestHandler):

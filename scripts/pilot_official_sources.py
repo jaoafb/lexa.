@@ -126,7 +126,7 @@ def apply_constitution_preview_decisions(current, candidate, differences, decisi
                     if len(indices) != 1:
                         raise ValueError(f'Dispositivo afastado não localizado de forma inequívoca para o art. {key}.')
                     inactive.extend(indices)
-                annotations[key] = {**note, 'inactiveParagraphs': inactive}
+                annotations[key] = (note, set(inactive))
             if decision['edition'] != 'planalto':
                 continue
             source = {
@@ -162,7 +162,10 @@ def apply_constitution_preview_decisions(current, candidate, differences, decisi
                 'documentSource': sources[key],
             }
         if key in annotations:
-            article = {**article, 'documentaryReview': annotations[key]}
+            note, inactive = annotations[key]
+            article = {**article, 'documentaryReview': note, 'paragraphs': [
+                paragraph for index, paragraph in enumerate(article['paragraphs']) if index not in inactive
+            ]}
         candidate['articles'][index] = article
     return applied
 

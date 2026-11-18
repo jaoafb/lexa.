@@ -140,3 +140,26 @@ class OfficialSourcePilotTests(unittest.TestCase):
         self.assertEqual(preview_choice(compare_camara(current, candidate)[0]), 'editorial')
         candidate = source('Art. 1º Vale, sim.', deleted=True)
         self.assertEqual(preview_choice(compare_camara(current, candidate)[0]), 'keep_history')
+
+    def test_documentary_exclusion_is_applied_to_candidate_and_preserves_raw_evidence(self):
+        paragraphs = [{'runs': [{'text': text, 'deleted': False}]} for text in (
+            'Art. 1º Texto vigente.', '§ 1º Texto afastado.',
+        )]
+        old = {'id': '1', 'scope': 'main', 'sectionId': 'a', 'paragraphs': paragraphs}
+        new = {**old, 'paragraphs': [*paragraphs, {'runs': [{'text': '§ 2º Outro texto.', 'deleted': False}]}]}
+        current = {'articles': [old], 'source': {'url': 'https://example.test/planalto'}}
+        candidate = {'articles': [new]}
+        differences = compare_camara(current, candidate)
+        change = differences[0]
+        note = {'text': 'Nota documental', 'source': {'label': 'Julgamento', 'url': 'https://example.test/julgamento'}}
+        decision = {'edition': 'planalto', 'reason': 'Julgamento', 'sources': [note['source']], 'readerNote': note,
+                    'inactivePrefixes': ['§ 1º Texto afastado'],
+                    'articles': {'1': {'lexaSha256': digest(change['before']), 'camaraSha256': digest(change['after'])}}}
+
+        apply_constitution_preview_decisions(current, candidate, differences, [decision])
+
+        self.assertEqual(candidate['articles'][0]['paragraphs'], paragraphs[:1])
+        self.assertEqual(candidate['articles'][0]['documentaryReview'], note)
+        self.assertEqual(len(current['articles'][0]['paragraphs']), 2)
+        self.assertEqual(len(change['before']['paragraphs']), 2)
+        self.assertEqual(len(change['after']['paragraphs']), 3)
