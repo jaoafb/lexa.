@@ -13,7 +13,8 @@ UNIT_PREFIX = re.compile(
     r'^(?P<marker>§\s*[0-9]+[º°]?|Parágrafo único|[IVXLCDM]+(?=\s*[-–—]))\s*[.\-–—]?\s*'
 )
 NUMBER_RANGE = re.compile(
-    r'^Arts?\.\s*[0-9]+(?:\.[0-9]{3})*\.?\s+a\s*[0-9]+(?:\.[0-9]{3})*\.?\s+',
+    r'^Arts?\.\s*[0-9]+(?:\.[0-9]{3})*(?:\s*[º°o])?\.?\s+a\s+'
+    r'[0-9]+(?:\.[0-9]{3})*(?:\s*[º°o])?\.?\s+',
     re.I,
 )
 STATUS = re.compile(

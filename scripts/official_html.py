@@ -3,7 +3,24 @@ from html.parser import HTMLParser
 import re
 import unicodedata
 
-ARTICLE_IDENTIFIER = re.compile(r'^Art\.?\s*(\d+(?:\.\d{3})*)(?:\s*[º°o])?((?:[-–][A-Z]{1,2}(?=[.\s:\-–]))*)\s*[.:-]?\s*')
+ARTICLE_NUMBER = r'(?:\d+(?:\.\d{3})*|l\d{2,3})'
+ARTICLE_IDENTIFIER = re.compile(
+    rf'^Art\.?\s*({ARTICLE_NUMBER})(?:\s*[º°o])?'
+    r'((?:[-–][A-Z]{1,2}(?=[.\s:\-–]))*)\s*[.:-]?\s*'
+)
+ARTICLE_RANGE = re.compile(
+    r'^Arts?\.\s*(\d+(?:\.\d{3})*)(?:\s*[º°o])?\.?\s+a\s+'
+    r'(\d+(?:\.\d{3})*)(?:\s*[º°o])?\.?\s*',
+    re.I,
+)
+
+
+def article_base(value):
+    """Read a documented article marker without rewriting its source text."""
+    compact = value.replace('.', '')
+    if compact.startswith('l') and compact[1:].isdigit():
+        compact = '1' + compact[1:]
+    return int(compact)
 
 def tidy(text):
     return re.sub(r'\s+', ' ', unicodedata.normalize('NFC', text.replace('\xa0', ' ').replace('\xad', '')))

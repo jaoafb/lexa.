@@ -15,10 +15,9 @@ import re
 
 from check_official_sources import fingerprint, validate, ADCT
 from official_http import check_url
-from official_html import ARTICLE_IDENTIFIER as ARTICLE
+from official_html import ARTICLE_IDENTIFIER as ARTICLE, ARTICLE_RANGE as RANGE, article_base
 
 ROOT = Path(__file__).resolve().parent.parent
-RANGE = re.compile(r'^Arts?\.\s*(\d+(?:\.\d{3})*)\.?\s+a\s+(\d+(?:\.\d{3})*)\.?\s*')
 HEADING = re.compile(r'^(PARTE\s+(?:GERAL|ESPECIAL|[IVX]+)\b|LIVRO\s+(?:[IVXLCDM]+|PRIMEIRO|SEGUNDO|TERCEIRO|COMPLEMENTAR)\b|(?:TÍTULO|SUBTÍTULO|CAPÍTULO|SEÇÃO|SUBSEÇÃO)\s+(?:[IVXLCDM]+|ÚNIC[OA])\b|DISPOSIÇÃO PRELIMINAR\b|DISPOSIÇÕES (?:FINAIS|GERAIS|TRANSITÓRIAS|COMUNS)\b)', re.I)
 UNIT = re.compile(r'^(?:§|Parágrafo\s+único|[IVXLCDM]+\s*[-–—]|[a-z]\))')
 
@@ -82,10 +81,10 @@ def convert(spec, snapshot, *, allowed_hosts=None):
             continue
         group = RANGE.match(text)
         match = group or ARTICLE.match(text)
-        if match and current and any(current['id']==str(parent) and low<=int(match[1].replace('.',''))<=high for parent,low,high in spec.get('quoted_amendments',[])):
+        if match and current and any(current['id']==str(parent) and low<=article_base(match[1])<=high for parent,low,high in spec.get('quoted_amendments',[])):
             match=None
         if match:
-            base = int(match[1].replace('.', ''))
+            base = article_base(match[1])
             number = str(base) + ('' if group else match[2].replace('–','-'))
             key = ('adct-' if scope == 'adct' else '') + number
             repeated_range=spec.get('repeated_article_range')
@@ -102,7 +101,7 @@ def convert(spec, snapshot, *, allowed_hosts=None):
                     current = {'id': key, 'number': number, 'scope': scope, 'sectionId': section_id(),
                                'sourceBlock': index+1, 'paragraphs': []}
                     if group:
-                        current['rangeEnd'] = int(group[2].replace('.', ''))
+                        current['rangeEnd'] = article_base(group[2])
                     if rubric:
                         current['title'] = rubric
                         rubric = None

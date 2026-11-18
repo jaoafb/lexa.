@@ -8,7 +8,7 @@ Python 3.12+ (standard library) and curl. No credentials are needed for public s
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from hashlib import sha256
-from official_html import OfficialHTML, parse_html, tidy
+from official_html import ARTICLE_IDENTIFIER as ARTICLE, ARTICLE_RANGE as RANGE, OfficialHTML, article_base, parse_html, tidy
 from pathlib import Path
 from urllib.error import HTTPError, URLError
 from official_http import fetch, check_url
@@ -20,8 +20,6 @@ import sys
 
 ROOT = Path(__file__).resolve().parent.parent
 ADCT = 'ATO DAS DISPOSIÇÕES CONSTITUCIONAIS TRANSITÓRIAS'
-ARTICLE = re.compile(r'^Art\.?\s*(\d+(?:\.\d{3})*)', re.I)
-RANGE = re.compile(r'^Arts?\.\s*(\d+(?:\.\d{3})*)\.?\s+a\s+(\d+(?:\.\d{3})*)', re.I)
 
 
 def validate(document, spec):
@@ -41,8 +39,8 @@ def validate(document, spec):
         group = RANGE.match(text)
         match = group or ARTICLE.match(text)
         if match:
-            start = int(match[1].replace('.', ''))
-            end = int(group[2].replace('.', '')) if group else start
+            start = article_base(match[1])
+            end = article_base(group[2]) if group else start
             if not 0 < start <= end <= 10000:
                 raise ValueError('Intervalo de artigos inválido')
             found[scope].update(range(start, end + 1))
