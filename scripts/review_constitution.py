@@ -118,6 +118,8 @@ def classify(change, senate, documented):
     if change['matchedByRange'] or change['conflictingStatusReference']:
         return 'further_review'
     left, right = (change[side] for side in ('before', 'after'))
+    if left is None or right is None:
+        return 'further_review'
     if left['title'] != right['title']:
         return 'further_review'
     lexa, lexa_words = projection(surviving_paragraphs(left))

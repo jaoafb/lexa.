@@ -9,10 +9,17 @@ from pilot_official_sources import (
     ROOT, apply_constitution_preview_decisions, combine_documents, load_js, parse_html, probe,
     write_constitution_review,
 )
-from review_constitution import preview_choice, projection
+from review_constitution import classify, preview_choice, projection
 
 
 class OfficialSourcePilotTests(unittest.TestCase):
+    def test_unmatched_article_remains_pending_in_review(self):
+        article = {'title': None, 'paragraphs': []}
+        for before, after in ((None, article), (article, None)):
+            change = {'before': before, 'after': after, 'matchedByRange': False,
+                      'conflictingStatusReference': False}
+            self.assertEqual(classify(change, None, None), 'further_review')
+
     @classmethod
     def setUpClass(cls):
         cls.specs = {spec['id']: spec for spec in json.loads((ROOT / 'monitor/sources.json').read_text())}

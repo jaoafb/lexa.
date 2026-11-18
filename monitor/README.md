@@ -61,6 +61,10 @@ Os dispositivos com redação integralmente riscada e notas documentais de vigê
 
 ### Prévia de Constituição e ADCT
 
+A aplicação das decisões documentais fica em `scripts/constitution_preview.py`, separada da coleta. A suíte essencial testa a prévia sem acesso à rede, em desktop e celular, usando o corpus versionado como fixture (não como captura da Câmara). A conferência ao vivo pode ser solicitada em **Verificar Lexa → Run workflow → camara_live**, sem depender do nome de uma branch. As verificações não homologam escolhas jurídicas.
+
+O modo `novo` é apenas uma sondagem dos caminhos antigos no domínio `portaldalegislacao.presidencia.gov.br`. Não comprova suporte à navegação ou à estrutura do portal novo. Falha de transferência não comprova ausência da lei nem descontinuação da fonte; a migração exige confirmar os endereços dos documentos e sua identidade antes de mudar as fontes de produção.
+
 `npm run preview:camara` gera e serve a prévia em `http://127.0.0.1:3014/#/cf`. Com `-- --build-only`, o comando gera o pacote em `test-results/camara-preview/site`. A candidata usa os dois documentos localizados no índice da Câmara, exige os mesmos identificadores por escopo e informa a fonte de cada documento no leitor e na cópia. O histórico publicado serve de referência na prévia. A comparação constitucional fica no mesmo diretório de teste, ao lado da candidata.
 
 ### Monitor diário
