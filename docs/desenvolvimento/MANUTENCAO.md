@@ -1,10 +1,10 @@
 # Manutenção do Lexa
 
-A biblioteca reúne 13 legislações federais, com Constituição e ADCT, além de súmulas vinculantes do STF e das Emendas Constitucionais nº 1–141. Veja o [acervo no guia de consulta](GUIA-DE-CONSULTA.md#acervo).
+A biblioteca reúne 13 legislações federais, com Constituição e ADCT, além de súmulas vinculantes do STF e das Emendas Constitucionais nº 1–141. Veja o [acervo no guia de consulta](../consulta/GUIA-DE-CONSULTA.md#acervo).
 
-O fluxo corrente de redações anteriores está em [HTML simples](REDACOES-ANTERIORES-SIMPLES.md); as responsabilidades das pastas e a preservação externa estão em [Estrutura](ESTRUTURA.md).
+O fluxo corrente de redações anteriores está em [HTML simples](../redacoes-anteriores/REDACOES-ANTERIORES-SIMPLES.md); as responsabilidades das pastas e a preservação externa estão em [Estrutura](ESTRUTURA.md).
 
-Os comandos abaixo devem ser executados na raiz do repositório. Para uma apresentação do site, veja o [README principal](../README.md).
+Os comandos abaixo devem ser executados na raiz do repositório. Para uma apresentação do site, veja o [README principal](../../README.md).
 
 ## Executar e validar
 
@@ -43,7 +43,7 @@ O histórico persistente é gerado em `data/history/legislation.js` junto com ca
 
 ## Reimportação e manutenção
 
-A conferência diária compara a edição publicada com as fontes da Câmara. A preparação de propostas pela fonte antiga do Planalto é manual. Veja o [monitor das legislações](../monitor/README.md). O procedimento a seguir reconstrói a base PDF arquivada em `data/archive/`. O leitor continua usando as edições HTML incorporadas em `data/official/legislation.js` quando disponíveis.
+A conferência diária compara a edição publicada com as fontes da Câmara. A preparação de propostas pela fonte antiga do Planalto é manual. Veja o [monitor das legislações](../../monitor/README.md). O procedimento a seguir reconstrói a base PDF arquivada em `data/archive/`. O leitor continua usando as edições HTML incorporadas em `data/official/legislation.js` quando disponíveis.
 
 1. Obtenha nova edição consolidada em fonte oficial. Confirme sua data de referência e guarde a versão anterior em histórico de Git ou armazenamento versionado antes da substituição.
 2. Compare os arquivos e as alterações de redação. A Constituição desta importação tem limites de páginas específicos (texto constitucional nas páginas PDF 8–142 e ADCT nas páginas 143–193). Antes de importar outra edição, revise esses limites, o ano, a referência às emendas e os números finais em `scripts/import_pdfs.py`. Não reutilize os metadados antigos em outra edição.
@@ -60,7 +60,7 @@ npm run build
 
 5. Revise o relatório, o diff dos textos, as redações riscadas, as regras de vigência e a interface antes de publicar. Falhas de validação bloqueiam a importação; não remova essas verificações apenas para aceitar uma nova edição.
 
-Na preparação manual de uma proposta, `scripts/import_official.py` converte as capturas validadas para o leitor. O workflow gera os testes e a prévia. As mudanças entram no acervo após revisão e merge. Veja [como preparar e revisar uma proposta](../monitor/README.md#preparação-de-propostas-pela-fonte-antiga-manual).
+Na preparação manual de uma proposta, `scripts/import_official.py` converte as capturas validadas para o leitor. O workflow gera os testes e a prévia. As mudanças entram no acervo após revisão e merge. Veja [como preparar e revisar uma proposta](../../monitor/README.md#preparação-de-propostas-pela-fonte-antiga-manual).
 
 ### Súmulas vinculantes do STF
 

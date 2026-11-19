@@ -12,10 +12,10 @@
 Busque por uma referência como `Art. 186 CC`, `ADCT art. 1` ou `SV 13`, ou pesquise uma expressão em toda a biblioteca. No leitor, você pode abrir o índice, salvar favoritos, ajustar a leitura e copiar um artigo com a referência e o link.
 
 - [Constituição Federal](https://jaoafb.github.io/lexa./#/cf) e [ADCT](https://jaoafb.github.io/lexa./#/cf/adct-1)
-- [Códigos e leis federais](docs/GUIA-DE-CONSULTA.md#acervo)
+- [Códigos e leis federais](docs/consulta/GUIA-DE-CONSULTA.md#acervo)
 - [Súmulas Vinculantes do STF](https://jaoafb.github.io/lexa./#/sv) e [Emendas Constitucionais nº 1–141](https://jaoafb.github.io/lexa./#/emendas)
 
-O [guia de consulta](docs/GUIA-DE-CONSULTA.md) reúne o acervo completo, exemplos de busca, instruções para usar offline e informações de privacidade.
+O [guia de consulta](docs/consulta/GUIA-DE-CONSULTA.md) reúne o acervo completo, exemplos de busca, instruções para usar offline e informações de privacidade.
 
 ## Fontes e atualizações
 
@@ -39,7 +39,7 @@ npm run test:python   # Testa os importadores e monitores com Python 3.12+
 | [`scripts/`](scripts/), [`monitor/`](monitor/) e [`tests/`](tests/) | Build, coleta, importação e verificações |
 | [`docs/`](docs/INDEX.md) | Guias de consulta, desenvolvimento e manutenção |
 
-Consulte a [estrutura do projeto](docs/ESTRUTURA.md) antes de editar e o [guia de manutenção](docs/MANUTENCAO.md) para gerar prévias ou publicar. Para abrir uma issue de conteúdo, indique a norma, o dispositivo e a fonte oficial, se disponível.
+Consulte a [estrutura do projeto](docs/desenvolvimento/ESTRUTURA.md) antes de editar e o [guia de manutenção](docs/desenvolvimento/MANUTENCAO.md) para gerar prévias ou publicar. Para abrir uma issue de conteúdo, indique a norma, o dispositivo e a fonte oficial, se disponível.
 
 ## Licença
 

@@ -4,7 +4,7 @@
 | --- | --- |
 | [Conferência diária com a Câmara](#conferência-diária-com-a-câmara) | Relatório comparado com a edição publicada e evidências para revisão |
 | [Preparação manual pela fonte antiga do Planalto](#preparação-de-propostas-pela-fonte-antiga-manual) | Proposta em rascunho com textos, referências, testes e prévia |
-| [Publicação no GitHub Pages](../docs/MANUTENCAO.md#publicar-no-github-pages) | Site gerado a partir da `main` após a incorporação de mudanças |
+| [Publicação no GitHub Pages](../docs/desenvolvimento/MANUTENCAO.md#publicar-no-github-pages) | Site gerado a partir da `main` após a incorporação de mudanças |
 
 As edições já incorporadas ao leitor ficam em [`data/official/`](../data/official/). Consulte também os procedimentos das [súmulas vinculantes](stf/README.md) e das [emendas constitucionais](../docs/EMENDAS-CONSTITUCIONAIS.md).
 

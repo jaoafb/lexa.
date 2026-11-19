@@ -22,7 +22,7 @@ Os 1.680 IDs anteriores, seus textos, notas, referências, fontes e estados fora
 
 As 154 exclusões são: 85 estruturas supra-artigo, duas ementas, 37 ocorrências sem texto normativo antigo, 17 indicações de veto/revogação e 13 duplicatas. Todas as decisões estão no snapshot de apresentação.
 
-As fontes originais já versionadas em `HTML/` permitem reproduzir a execução. Cópias duplicadas de HTML, preview duplicado, backup de fixture, logs, relatórios temporários e manifesto da execução local completa não integram este conjunto mínimo. O inventário e a localização do arquivo externo estão em [PRESERVACAO.json](../experiments/PRESERVACAO.json). Os três JSONs acima são referências de teste, não um diretório completo para executar `--verify` diretamente.
+As fontes originais já versionadas em `HTML/` permitem reproduzir a execução. Cópias duplicadas de HTML, preview duplicado, backup de fixture, logs, relatórios temporários e manifesto da execução local completa não integram este conjunto mínimo. O inventário e a localização do arquivo externo estão em [PRESERVACAO.json](../../experiments/PRESERVACAO.json). Os três JSONs acima são referências de teste, não um diretório completo para executar `--verify` diretamente.
 
 ## Testes e prévia
 

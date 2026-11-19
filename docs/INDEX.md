@@ -2,13 +2,20 @@
 
 | Preciso de… | Consulte |
 | --- | --- |
-| Buscar, ler ou instalar o Lexa | [Guia de consulta](GUIA-DE-CONSULTA.md) |
-| Encontrar os arquivos da aplicação, do acervo ou do build | [Estrutura do projeto](ESTRUTURA.md) |
-| Executar testes, gerar prévias e publicar | [Manutenção](MANUTENCAO.md) e [baseline de desempenho](BASELINE-DESEMPENHO.md) |
+| Buscar, ler ou instalar o Lexa | [Guia de consulta](consulta/GUIA-DE-CONSULTA.md) |
+| Encontrar os arquivos da aplicação, do acervo ou do build | [Estrutura do projeto](desenvolvimento/ESTRUTURA.md) |
+| Executar testes, gerar prévias e publicar | [Manutenção](desenvolvimento/MANUTENCAO.md) e [baseline de desempenho](desenvolvimento/BASELINE-DESEMPENHO.md) |
 | Conferir fontes ou preparar uma atualização | [Monitor das legislações](../monitor/README.md) e [monitor do STF](../monitor/stf/README.md) |
-| Manter a biblioteca de Emendas Constitucionais | [Publicação, vínculos e manutenção das emendas](EMENDAS-CONSTITUCIONAIS.md) |
-| Trabalhar com redações anteriores | [Fluxo HTML simples](REDACOES-ANTERIORES-SIMPLES.md), [extrator](EXTRATOR-REDACOES-HTML.md) e [decisão de lançamento](REDACOES-ANTERIORES-LANCAMENTO.md) |
-| Preparar uma alteração no repositório | [Processo de trabalho](PROCESSO-DE-TRABALHO.md), [instruções para agentes](../AGENTS.md) e [Codex no Windows](CODEX-LOCAL.md) |
+| Manter a biblioteca de Emendas Constitucionais | [Vínculos e manutenção das emendas](EMENDAS-CONSTITUCIONAIS.md) |
+| Trabalhar com redações anteriores | [Fluxo HTML simples](redacoes-anteriores/REDACOES-ANTERIORES-SIMPLES.md), [extrator](redacoes-anteriores/EXTRATOR-REDACOES-HTML.md) e [referência de compatibilidade](redacoes-anteriores/HISTORICO-LEGISLATIVO.md) |
+| Preparar uma alteração no repositório | [Processo de trabalho](coordenacao/PROCESSO-DE-TRABALHO.md), [instruções para agentes](../AGENTS.md) e [Codex no Windows](desenvolvimento/CODEX-LOCAL.md) |
+
+## Autorizações de publicação
+
+Os registros abaixo ficam na raiz de `docs/` porque os arquivos de liberação apontam para seus caminhos e seções.
+
+- [Emendas Constitucionais](EMENDAS-CONSTITUCIONAIS.md#publicação-direta-autorizada-pelo-mantenedor)
+- [Redações anteriores](REDACOES-ANTERIORES-LANCAMENTO.md#autorizacao-de-publicacao)
 
 ## Fontes e evidências
 
@@ -18,7 +25,7 @@
 ## Referências e registros anteriores
 
 - [Arquivo de documentação](arquivo/README.md) com estudos de desempenho, entregas de UX, testes de portabilidade e o fluxo anterior de extração por HTML.
-- [Histórico legislativo](HISTORICO-LEGISLATIVO.md), [UX e interface](ux-ui/lote-1.md) e [coordenação](coordenacao/INDEX.md).
+- [UX e interface](ux-ui/lote-1.md) e [coordenação](coordenacao/INDEX.md).
 - Remissões expressas e os fluxos de PDFs/Câmara para redações anteriores estão suspensos. Consulte os registros no histórico do Git.
 
 ## Verificações e licença

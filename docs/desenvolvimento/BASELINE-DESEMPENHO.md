@@ -74,7 +74,7 @@ O teste `benchmark_contract.py` verifica cache frio, reload com memória vazia e
 
 Os resultados e as medianas desta execução são apresentados abaixo, acompanhados do relatório bruto para auditoria.
 
-Relatório bruto: [135 amostras e metadados](baselines/chromium-cpu4x-2026-10-17.json). Cinco amostras por linha. A revisão de instrumentação medida foi `fbaf46c`; o código do aplicativo é o da `main` em `54be7bd`. O JSON registra SHA-256 do benchmark, HTML e catálogo.
+Relatório bruto: [135 amostras e metadados](../baselines/chromium-cpu4x-2026-10-17.json). Cinco amostras por linha. A revisão de instrumentação medida foi `fbaf46c`; o código do aplicativo é o da `main` em `54be7bd`. O JSON registra SHA-256 do benchmark, HTML e catálogo.
 
 Ambiente efetivamente utilizado: Chromium **154.0.8037.57** do sistema (`/usr/bin/chromium`), Playwright **1.62.0**, Node **v22.23.3**, Python **3.12.14**, Linux x86_64/glibc 2.41, contêiner compartilhado com 5 CPUs lógicas reportadas. CPU da página limitada a 4×. O preparo offline inclui trabalho do service worker em outro alvo: sua CPU não foi limitada separadamente e sua memória não foi medida. Por isso não compare a duração de instalação diretamente com o tempo de busca.
 
@@ -143,4 +143,4 @@ Essa é a transferência do preparo completo, incluindo a navegação inicial e 
 
 ## Continuidade da otimização
 
-As medições e os números de suítes acima registram a etapa 1. Na versão das etapas 2–6, a suíte essencial tem nove verificações e a completa inclui sessão longa e atualização parcial com duas abas. O preparo completo passou a ser explícito; `offline_first_visit` mede separadamente a instalação parcial. Consulte [decisões e comparação final](arquivo/OTIMIZACAO-ETAPAS-2-6.md) antes de comparar os cenários offline.
+As medições e os números de suítes acima registram a etapa 1. Na versão das etapas 2–6, a suíte essencial tem nove verificações e a completa inclui sessão longa e atualização parcial com duas abas. O preparo completo passou a ser explícito; `offline_first_visit` mede separadamente a instalação parcial. Consulte [decisões e comparação final](../arquivo/OTIMIZACAO-ETAPAS-2-6.md) antes de comparar os cenários offline.
