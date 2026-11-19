@@ -1,27 +1,27 @@
 # Guia de consulta do Lexa
 
-O Lexa é uma biblioteca gratuita para consultar legislação federal no computador ou no celular, sem cadastro. [Abrir a biblioteca](https://pajaao.github.io/lexa./)
+O Lexa é uma biblioteca gratuita para consultar legislação federal no computador ou no celular, sem cadastro. [Abrir a biblioteca](https://jaoafb.github.io/lexa./)
 
 ## Acervo
 
 | Coleção | Sigla | Acesso |
 | --- | --- | --- |
-| Constituição Federal de 1988 | CF | [Ler a Constituição](https://pajaao.github.io/lexa./#/cf) |
-| Ato das Disposições Constitucionais Transitórias | ADCT | [Ler o ADCT](https://pajaao.github.io/lexa./#/cf/adct-1) |
-| Código Civil | CC | [Ler o código](https://pajaao.github.io/lexa./#/civil) |
-| Código Penal | CP | [Ler o código](https://pajaao.github.io/lexa./#/penal) |
-| Consolidação das Leis do Trabalho | CLT | [Ler a CLT](https://pajaao.github.io/lexa./#/clt) |
-| Código de Processo Civil | CPC | [Ler o código](https://pajaao.github.io/lexa./#/cpc) |
-| Código de Defesa do Consumidor | CDC | [Ler o código](https://pajaao.github.io/lexa./#/cdc) |
-| Código Tributário Nacional | CTN | [Ler o código](https://pajaao.github.io/lexa./#/ctn) |
-| Código de Processo Penal | CPP | [Consultar](https://pajaao.github.io/lexa./#/cpp) |
-| Estatuto da Criança e do Adolescente | ECA | [Consultar](https://pajaao.github.io/lexa./#/eca) |
-| Lei de Execução Penal | LEP | [Consultar](https://pajaao.github.io/lexa./#/lep) |
-| Lei Maria da Penha | LMP | [Consultar](https://pajaao.github.io/lexa./#/maria-penha) |
-| Lei de Improbidade Administrativa | LIA | [Consultar](https://pajaao.github.io/lexa./#/improbidade) |
-| Lei de Licitações e Contratos Administrativos | LLCA | [Consultar](https://pajaao.github.io/lexa./#/licitacoes) |
-| Súmulas Vinculantes do STF | SV | [Consultar as súmulas](https://pajaao.github.io/lexa./#/sv) |
-| Emendas Constitucionais nº 1–141 | EC | [Consultar as emendas](https://pajaao.github.io/lexa./#/emendas) |
+| Constituição Federal de 1988 | CF | [Ler a Constituição](https://jaoafb.github.io/lexa./#/cf) |
+| Ato das Disposições Constitucionais Transitórias | ADCT | [Ler o ADCT](https://jaoafb.github.io/lexa./#/cf/adct-1) |
+| Código Civil | CC | [Ler o código](https://jaoafb.github.io/lexa./#/civil) |
+| Código Penal | CP | [Ler o código](https://jaoafb.github.io/lexa./#/penal) |
+| Consolidação das Leis do Trabalho | CLT | [Ler a CLT](https://jaoafb.github.io/lexa./#/clt) |
+| Código de Processo Civil | CPC | [Ler o código](https://jaoafb.github.io/lexa./#/cpc) |
+| Código de Defesa do Consumidor | CDC | [Ler o código](https://jaoafb.github.io/lexa./#/cdc) |
+| Código Tributário Nacional | CTN | [Ler o código](https://jaoafb.github.io/lexa./#/ctn) |
+| Código de Processo Penal | CPP | [Consultar](https://jaoafb.github.io/lexa./#/cpp) |
+| Estatuto da Criança e do Adolescente | ECA | [Consultar](https://jaoafb.github.io/lexa./#/eca) |
+| Lei de Execução Penal | LEP | [Consultar](https://jaoafb.github.io/lexa./#/lep) |
+| Lei Maria da Penha | LMP | [Consultar](https://jaoafb.github.io/lexa./#/maria-penha) |
+| Lei de Improbidade Administrativa | LIA | [Consultar](https://jaoafb.github.io/lexa./#/improbidade) |
+| Lei de Licitações e Contratos Administrativos | LLCA | [Consultar](https://jaoafb.github.io/lexa./#/licitacoes) |
+| Súmulas Vinculantes do STF | SV | [Consultar as súmulas](https://jaoafb.github.io/lexa./#/sv) |
+| Emendas Constitucionais nº 1–141 | EC | [Consultar as emendas](https://jaoafb.github.io/lexa./#/emendas) |
 
 O **ADCT** reúne disposições transitórias da Constituição e tem numeração própria. As **súmulas vinculantes** são enunciados do Supremo Tribunal Federal com efeito vinculante nos termos da Constituição.
 
@@ -60,7 +60,7 @@ O Lexa pode ser instalado como aplicativo web pelo navegador.
 - No **Android ou computador**, procure a opção de instalar no menu ou na barra de endereços do navegador. Quando disponível, o botão **Instalar Lexa** aparece em **Sobre e ajustes → Instalar e usar offline**.
 - No **iPhone ou iPad**, abra o Lexa no Safari e escolha **Compartilhar → Adicionar à Tela de Início**.
 
-Na primeira visita, o Lexa guarda a interface e, durante o uso, armazena os conteúdos consultados. Para baixar todo o acervo, incluindo a busca e o histórico, abra **Sobre e ajustes → Instalar e usar offline**, selecione **Preparar biblioteca completa offline** e aguarde a confirmação. PDFs e páginas oficiais externas precisam de internet. O navegador pode remover dados salvos para liberar espaço. [Abrir os ajustes](https://pajaao.github.io/lexa./#/sobre-e-ajustes)
+Na primeira visita, o Lexa guarda a interface e, durante o uso, armazena os conteúdos consultados. Para baixar todo o acervo, incluindo a busca e o histórico, abra **Sobre e ajustes → Instalar e usar offline**, selecione **Preparar biblioteca completa offline** e aguarde a confirmação. PDFs e páginas oficiais externas precisam de internet. O navegador pode remover dados salvos para liberar espaço. [Abrir os ajustes](https://jaoafb.github.io/lexa./#/sobre-e-ajustes)
 
 Confira a edição indicada durante a leitura offline. Quando a opção **Atualizar agora** aparecer, você pode recarregar o Lexa para usar a nova versão. Seus favoritos e preferências ficam salvos.
 
@@ -70,14 +70,14 @@ O leitor apresenta a edição, a procedência e os links para conferência em **
 
 As súmulas vinculantes usam o PDF fornecido ao projeto, que declara consulta ao STF em **16/10/2026** e reúne 63 entradas. O Lexa conserva as indicações desse documento, incluindo a **SV 9 como cancelada** e a **SV 30 como pendente de publicação**. A atualização é manual. [Procedimento para as súmulas](../monitor/stf/README.md)
 
-A rotina diária compara a edição publicada com as fontes oficiais da Câmara e entrega um relatório para revisão. A página Atualizações mostra as edições já incorporadas e as diferenças registradas. Confira a redação, as notas e a vigência na fonte oficial. A data da coleta indica quando a fonte foi consultada. [Atualizações do acervo](https://pajaao.github.io/lexa./#/atualizacoes)
+A rotina diária compara a edição publicada com as fontes oficiais da Câmara e entrega um relatório para revisão. A página Atualizações mostra as edições já incorporadas e as diferenças registradas. Confira a redação, as notas e a vigência na fonte oficial. A data da coleta indica quando a fonte foi consultada. [Atualizações do acervo](https://jaoafb.github.io/lexa./#/atualizacoes)
 
 ## Privacidade e serviços externos
 
 Favoritos, tema, preferências e posição de leitura ficam no navegador. Ao limpar os dados do site, você também remove essas informações e os conteúdos salvos offline.
 
-A política do Lexa explica as estatísticas de uso e desempenho via Cloudflare Web Analytics, a hospedagem no GitHub Pages e o formulário externo de feedback. Ela também indica o canal de contato para solicitações de privacidade. [Política de privacidade do Lexa](https://pajaao.github.io/lexa./#/privacidade)
+A política do Lexa explica as estatísticas de uso e desempenho via Cloudflare Web Analytics, a hospedagem no GitHub Pages e o formulário externo de feedback. Ela também indica o canal de contato para solicitações de privacidade. [Política de privacidade do Lexa](https://jaoafb.github.io/lexa./#/privacidade)
 
 ## Relatar um problema
 
-Conte o que você tentou fazer, o que esperava e o que apareceu. Para um problema de conteúdo, inclua o número do artigo ou da súmula e, se tiver, o link da fonte oficial. [Issues do Lexa](https://github.com/pajaao/lexa./issues)
+Conte o que você tentou fazer, o que esperava e o que apareceu. Para um problema de conteúdo, inclua o número do artigo ou da súmula e, se tiver, o link da fonte oficial. [Issues do Lexa](https://github.com/jaoafb/lexa./issues)
