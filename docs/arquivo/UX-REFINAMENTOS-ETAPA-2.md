@@ -66,7 +66,7 @@ Falhas durante a construção dos novos testes foram investigadas: campos opcion
 
 ## Tamanho e carregamento inicial
 
-[Resultados brutos](medicoes/ux-etapa-2-carregamento.json). Comparação limitada ao carregamento inicial da biblioteca, sem repetir a auditoria completa de desempenho.
+[Resultados brutos](../medicoes/ux-etapa-2-carregamento.json). Comparação limitada ao carregamento inicial da biblioteca, sem repetir a auditoria completa de desempenho.
 
 Condições: Chromium 154.0.8037.57, Playwright 1.62.0, CPU da página limitada a 4× via CDP, viewport 375 × 812, cinco contextos frios por pacote, HTTP local sem compressão ou limitação de rede, service worker bloqueado. A prontidão é a presença dos 14 cartões; bytes incluem headers via CDP. O snapshot anterior foi gerado a partir da main antes das alterações. O contêiner é compartilhado, sem controle da carga/frequência do host. Não é uma medição em celular físico.
 

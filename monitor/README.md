@@ -1,6 +1,12 @@
-# Atualizações das fontes e dos textos do leitor
+# Conferência das fontes e atualização do acervo
 
-O workflow consulta as fontes cadastradas oficiais e prepara uma proposta em rascunho com as referências, os textos do leitor e uma prévia. **Não faz aprovação, merge ou implantação automática.** As edições já incorporadas ao leitor estão em `data/official/`; propostas posteriores continuam sujeitas à revisão.
+| Fluxo | Resultado |
+| --- | --- |
+| [Conferência diária com a Câmara](#conferência-diária-com-a-câmara) | Relatório comparado com a edição publicada e evidências para revisão |
+| [Preparação manual pela fonte antiga do Planalto](#preparação-de-propostas-pela-fonte-antiga-manual) | Proposta em rascunho com textos, referências, testes e prévia |
+| [Publicação no GitHub Pages](../docs/MANUTENCAO.md#publicar-no-github-pages) | Site gerado a partir da `main` após a incorporação de mudanças |
+
+As edições já incorporadas ao leitor ficam em [`data/official/`](../data/official/). Consulte também os procedimentos das [súmulas vinculantes](stf/README.md) e das [emendas constitucionais](../docs/EMENDAS-CONSTITUCIONAIS.md).
 
 ## Preparação de propostas pela fonte antiga (manual)
 
@@ -69,9 +75,9 @@ O modo `novo` é apenas uma sondagem dos caminhos antigos no domínio `portaldal
 
 `npm run preview:camara` gera e serve a prévia em `http://127.0.0.1:3014/#/cf`. Com `-- --build-only`, o comando gera o pacote em `test-results/camara-preview/site`. A candidata usa os dois documentos localizados no índice da Câmara, exige os mesmos identificadores por escopo e informa a fonte de cada documento no leitor e na cópia. O histórico publicado serve de referência na prévia. A comparação constitucional fica no mesmo diretório de teste, ao lado da candidata.
 
-### Monitor diário
+### Preparar uma proposta da fonte antiga no ambiente local
 
-Node.js 22+, Python 3.12+ (biblioteca padrão) e curl:
+Use Node.js 22+, Python 3.12+ (biblioteca padrão) e curl.
 
 ```sh
 npm run test:python

@@ -57,7 +57,7 @@ Ao incorporar mudanças à `main`, o workflow `deploy-pages.yml` testa o projeto
 
 ## Atualização dos textos
 
-O monitor do Planalto prepara os dados oficiais, o histórico e uma proposta em rascunho. A prévia gerada, com a pasta `dist/` inteira, fica como artefato do Actions, sem versionar o HTML compilado. Após revisão e merge, o workflow de publicação atualiza o site.
+A conferência diária da Câmara compara as 13 legislações com a edição publicada e guarda os resultados como artefatos do Actions. A preparação de uma proposta pela fonte antiga do Planalto é manual. Esse fluxo gera os dados oficiais, o histórico e uma prévia com a pasta `dist/` inteira. Após revisão e merge, o workflow de publicação atualiza o site.
 
 As súmulas continuam com atualização manual; a rotina de coleta do STF permanece disponível somente para diagnóstico manual. Esta organização não reativa a coleta.
 

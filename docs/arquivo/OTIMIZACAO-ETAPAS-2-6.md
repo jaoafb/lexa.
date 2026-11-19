@@ -142,7 +142,7 @@ O novo primeiro preparo parcial transferiu **278.607 bytes de corpos pela origem
 
 Na sessão longa final, após duas voltas: **29.179.904 bytes** de heap da página e **3 leitores completos**, contra **38.496.712 bytes/14 leitores** na observação intermediária anterior ao limite (−24,2%). Trata-se de uma sessão por compilação, sem mediana, não de RAM total. Os índices de todas as coleções permanecem após a busca global para preservar abrangência e rapidez nas consultas seguintes.
 
-Resultados brutos: [benchmark final](baselines/optimization-final-2026-10-17.json), [baseline](baselines/chromium-cpu4x-2026-10-17.json) e [sessão longa final](baselines/memory-final-2026-10-17.json).
+Resultados brutos: [benchmark final](../baselines/optimization-final-2026-10-17.json), [baseline](../baselines/chromium-cpu4x-2026-10-17.json) e [sessão longa final](../baselines/memory-final-2026-10-17.json).
 
 ## Verificações finais
 

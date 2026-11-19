@@ -1,6 +1,6 @@
 # Manutenção do Lexa
 
-Biblioteca de 13 legislações federais, com Constituição/ADCT, e súmulas vinculantes do STF. Consulte o catálogo corrente no README.
+A biblioteca reúne 13 legislações federais, com Constituição e ADCT, além de súmulas vinculantes do STF e das Emendas Constitucionais nº 1–141. Veja o [acervo no guia de consulta](GUIA-DE-CONSULTA.md#acervo).
 
 O fluxo corrente de redações anteriores está em [HTML simples](REDACOES-ANTERIORES-SIMPLES.md); as responsabilidades das pastas e a preservação externa estão em [Estrutura](ESTRUTURA.md).
 
@@ -43,7 +43,7 @@ O histórico persistente é gerado em `data/history/legislation.js` junto com ca
 
 ## Reimportação e manutenção
 
-A rotina diária prepara propostas com os textos do leitor, testes e prévia; não faz merge nem implantação automática. Consulte `monitor/README.md`. O procedimento abaixo continua disponível para reconstruir a base PDF arquivada; ele não substitui edições HTML já incorporadas em `data/official/legislation.js`:
+A conferência diária compara a edição publicada com as fontes da Câmara. A preparação de propostas pela fonte antiga do Planalto é manual. Veja o [monitor das legislações](../monitor/README.md). O procedimento a seguir reconstrói a base PDF arquivada em `data/archive/`. O leitor continua usando as edições HTML incorporadas em `data/official/legislation.js` quando disponíveis.
 
 1. Obtenha nova edição consolidada em fonte oficial. Confirme sua data de referência e guarde a versão anterior em histórico de Git ou armazenamento versionado antes da substituição.
 2. Compare os arquivos e as alterações de redação. A Constituição desta importação tem limites de páginas específicos (texto constitucional nas páginas PDF 8–142 e ADCT nas páginas 143–193). Antes de importar outra edição, revise esses limites, o ano, a referência às emendas e os números finais em `scripts/import_pdfs.py`. Não reutilize os metadados antigos em outra edição.
@@ -60,7 +60,7 @@ npm run build
 
 5. Revise o relatório, o diff dos textos, as redações riscadas, as regras de vigência e a interface antes de publicar. Falhas de validação bloqueiam a importação; não remova essas verificações apenas para aceitar uma nova edição.
 
-O monitor consulta as fontes, `scripts/import_official.py` prepara as edições cadastradas para o leitor e o workflow gera os testes e a prévia antes de propor a atualização. A primeira conversão e as alterações posteriores entram somente após revisão e merge. A implantação pública depende da hospedagem e não é executada por esse workflow. Veja [ativação, revisão e limites](../monitor/README.md).
+Na preparação manual de uma proposta, `scripts/import_official.py` converte as capturas validadas para o leitor. O workflow gera os testes e a prévia. As mudanças entram no acervo após revisão e merge. Veja [como preparar e revisar uma proposta](../monitor/README.md#preparação-de-propostas-pela-fonte-antiga-manual).
 
 ### Súmulas vinculantes do STF
 
@@ -70,7 +70,7 @@ A fonte desta importação é **somente** `sources/Sumulas_Vinculantes_STF_Compl
 
 `python3 scripts/import_sumulas.py` reconstrói `data/archive/sumulas.js` usando PyMuPDF (mesma dependência de `scripts/requirements-import.txt`). O processo valida o SHA-256 registrado em `sources/sumulas-manifest.json`, a numeração, os cabeçalhos e os links individuais do STF. Uma nova edição exige revisão do manifesto e das regras de extração; não substitua a fonte apenas para iniciar o site.
 
-A consulta automática das súmulas está **pausada** por decisão do mantenedor, após falhas de acesso ao STF. O arquivo de workflow mantém somente a execução manual para diagnóstico futuro. Não há agenda nem execução por push para as súmulas. A coleção permanece baseada no PDF fornecido e deve ser revista ao receber nova edição. A rotina automática das legislações cadastradas do Planalto continua independente.
+A consulta automática das súmulas está **pausada** por decisão do mantenedor, após falhas de acesso ao STF. O arquivo de workflow mantém somente a execução manual para diagnóstico futuro. Não há agenda nem execução por push para as súmulas. A coleção permanece baseada no PDF fornecido e deve ser revista ao receber nova edição. A conferência diária das legislações pela Câmara funciona separadamente.
 
 ## Publicar no GitHub Pages
 
@@ -96,9 +96,9 @@ Os ajustes de fonte e espaçamento são salvos em `lexa-reading`, e a última en
 
 `src/pwa.js` registra o worker somente em contexto seguro, mostra o estado offline e oferece a ativação de uma versão pendente. `src/sw.js` é o modelo do service worker. O build calcula uma versão SHA-256 a partir do HTML, worker e recursos offline; cada atualização de textos também produz uma nova versão. Não edite `dist/sw.js` diretamente.
 
-Ao voltar ao primeiro plano ou recuperar a conexão, o aplicativo solicita uma verificação, com intervalo mínimo de cinco minutos entre tentativas automáticas. Em **Instalar e usar offline**, no rodapé, **Verificar atualizações** permite uma tentativa manual sem aguardar esse intervalo. Pedidos simultâneos compartilham a mesma operação; o estado acessível distingue verificação, aplicativo atualizado, versão disponível e falha, inclusive na preparação dos arquivos. Uma versão disponível continua dependendo da confirmação em **Atualizar agora**. Essa verificação é do aplicativo, não uma consulta de vigência ou atualização das fontes jurídicas. `tests/browser/pwa_update_check.py` cobre o fluxo manual, a retomada simulada, frequência, falhas e preservação da leitura e dos dados.
+Ao voltar ao primeiro plano ou recuperar a conexão, o aplicativo solicita uma verificação, com intervalo mínimo de cinco minutos entre tentativas automáticas. Em **Sobre e ajustes → Instalar e usar offline**, **Verificar atualizações** permite uma tentativa manual sem aguardar esse intervalo. Pedidos simultâneos compartilham a mesma operação; o estado acessível distingue verificação, aplicativo atualizado, versão disponível e falha, inclusive na preparação dos arquivos. Uma versão disponível continua dependendo da confirmação em **Atualizar agora**. Essa verificação é do aplicativo, não uma consulta de vigência ou atualização das fontes jurídicas. `tests/browser/pwa_update_check.py` cobre o fluxo manual, a retomada simulada, frequência, falhas e preservação da leitura e dos dados.
 
-A instalação do worker prepara o shell, catálogo, manifesto, ícones e todos os JSONs de normas e histórico. O build incorpora no worker a lista de arquivos e o SHA-256 de cada um. Todos os arquivos são verificados antes de a instalação ser aceita. A carga interativa de JSON também confere o hash. JSONs imutáveis usam `cache:default` e são reutilizados dos caches anteriores do mesmo escopo, com nova verificação, sem serem baixados novamente quando só a interface muda. Arquivos do shell usam recarga para evitar misturar edições. Uma instalação rejeitada remove seu cache parcial. Uma falha impede a instalação da versão; a edição anterior continua ativa. O pacote ativo é servido do cache até a pessoa aceitar “Atualizar agora”. Não há ativação automática de uma versão pendente. Somente depois da ativação são removidos os caches anteriores desse aplicativo e escopo. Favoritos e preferências usam localStorage e não são apagados na atualização.
+Na primeira visita, o worker prepara o shell, o catálogo, o manifesto, os ícones e os módulos. Os dados consultados são guardados à medida que são carregados. **Preparar biblioteca completa offline** guarda todos os arquivos de normas, busca e histórico. Na atualização, o worker prepara a nova versão de acordo com os conteúdos já guardados. O build registra o SHA-256 de cada arquivo e o worker verifica os bytes antes de usar o cache. Arquivos imutáveis podem ser reutilizados de versões anteriores após nova verificação. Se a instalação falhar, a edição anterior continua ativa. Após a confirmação em **Atualizar agora**, o worker remove os caches anteriores do mesmo escopo e pode manter uma edição anterior enquanto outra aba estiver lendo. Favoritos e preferências ficam no armazenamento local do navegador.
 
 Não são armazenados PDFs nem páginas externas. O worker intercepta somente navegação para a raiz do aplicativo ou `index.html` e os recursos explícitos do pacote, dentro do próprio escopo. A leitura offline não verifica alterações nas fontes oficiais nem certifica vigência. Em navegação privada, falta de espaço ou limpeza de dados, o armazenamento pode ficar indisponível.
 
@@ -154,7 +154,7 @@ Para reimportar esse PDF, use `python3 scripts/import_pdfs.py --only clt`. Rubri
 
 ## Carregamento e desempenho
 
-A home usa somente metadados, contagens e fontes. Não há download de JSONs jurídicos pela interface até abrir uma norma ou iniciar uma busca; a instalação independente da PWA baixa todos para o acesso offline. Favoritos carregam apenas as normas marcadas. O histórico usa um JSON próprio. A retomada usa a referência local e a valida assim que a norma é carregada.
+A home usa somente metadados, contagens e fontes. A interface carrega JSONs jurídicos sob demanda. Você pode usar **Preparar biblioteca completa offline** para baixar o acervo inteiro. Favoritos carregam apenas as normas marcadas. O histórico usa um JSON próprio. A retomada usa a referência local e a valida assim que a norma é carregada.
 
 Uma referência com sigla carrega apenas sua coleção; referências sem sigla e busca textual preparam todas as coleções, com no máximo três carregamentos simultâneos. Os índices de busca são calculados por norma quando usados. A interface mostra estados acessíveis de carregamento, permite repetir uma falha e ignora respostas que chegam após trocar de página ou consulta. Favoritos, avisos legais e rotas públicas permanecem preservados.
 

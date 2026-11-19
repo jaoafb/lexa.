@@ -1,6 +1,6 @@
 # Redações anteriores — registro do fluxo HTML anterior
 
-> Registro histórico: as contagens e os comandos abaixo pertencem à implementação anterior. Para operação corrente, use [o fluxo HTML simples](REDACOES-ANTERIORES-SIMPLES.md) e [a decisão de lançamento](REDACOES-ANTERIORES-LANCAMENTO.md). Não executar os preparadores antigos para atualizar o lote publicado.
+> Registro histórico: as contagens e os comandos abaixo pertencem à implementação anterior. Para operação corrente, use [o fluxo HTML simples](../REDACOES-ANTERIORES-SIMPLES.md) e [a decisão de lançamento](../REDACOES-ANTERIORES-LANCAMENTO.md). Não executar os preparadores antigos para atualizar o lote publicado.
 
 
 ## Escopo aprovado
