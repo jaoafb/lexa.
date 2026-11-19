@@ -1,4 +1,4 @@
-name: Conferência diária da legislação
+name: Conferir diariamente as 13 legislações
 
 on:
   pull_request:

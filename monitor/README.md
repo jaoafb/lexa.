@@ -2,7 +2,7 @@
 
 O workflow consulta as fontes cadastradas oficiais e prepara uma proposta em rascunho com as referências, os textos do leitor e uma prévia. **Não faz aprovação, merge ou implantação automática.** As edições já incorporadas ao leitor estão em `data/official/`; propostas posteriores continuam sujeitas à revisão.
 
-## Fluxo diário
+## Preparação de propostas pela fonte antiga (manual)
 
 1. `check_official_sources.py` baixa uma página por vez, por HTTPS verificado, com curl e HTTP/1.1. Faz até três tentativas para falhas transitórias, respeita `Retry-After` e não contorna falhas de certificado. Valida identidade, tamanho, artigos-base, Constituição e ADCT separados. Uma falha bloqueia o restante da atualização e preserva as referências existentes.
 2. `import_official.py` verifica os hashes e converte as referências cadastradas para o leitor. Preserva artigos com letras, parágrafos, incisos, redações riscadas e revogações agrupadas. Fontes incompletas, parágrafos normativos sem atribuição e estilos de exclusão não suportados bloqueiam a conversão. Não altera os PDFs originais nem `data/archive/legislation.js`.
@@ -35,9 +35,9 @@ O histórico é consultado em `#/atualizacoes` e por links nos artigos que já t
 3. Marque o PR como pronto, revise e faça o merge quando estiver satisfeito. Aprovar uma revisão sem mesclar não incorpora os arquivos à `main`.
 4. Confira o workflow separado `deploy-pages.yml`, acionado pelo push na `main`. O monitor não faz deploy nem atesta revisão jurídica integral.
 
-## Execução no GitHub
+## Execução manual da preparação antiga
 
-O workflow fica em `.github/workflows/monitor-legislation.yml`. Ele tenta executar diariamente por volta de **06:17 em São Paulo** (09:17 UTC), com possível atraso do GitHub. Também aceita **Run workflow** e executa após alterações nos arquivos da rotina enviadas a `main`.
+O workflow fica em `.github/workflows/monitor-legislation.yml` e só aceita **Run workflow**. O acesso direto às fontes antigas do Planalto pode redirecionar para fora dos domínios autorizados; por isso, esse fluxo não roda em pushes nem por agendamento. Sua execução é deliberada e serve para preparar uma proposta quando a fonte puder ser validada integralmente.
 
 Em **Settings → Actions → General**, permita os actions utilizados e a criação de PRs pelo `GITHUB_TOKEN`. O GitHub fornece esse token durante o job; não precisa fornecer valores no chat. O job usa `contents: write` e `pull-requests: write`, cria rascunhos e não aprova nem mescla propostas. Monitore falhas em Actions: execução sem sucesso não equivale a “nenhuma mudança na lei”.
 
@@ -45,7 +45,7 @@ Em **Settings → Actions → General**, permita os actions utilizados e a cria�
 
 ### Conferência diária com a Câmara
 
-A conferência diária consulta as 13 fontes configuradas do Planalto e, como fonte independente adicional, Constituição/ADCT, Código Civil e CLT na Câmara. Cada resultado é comparado diretamente à edição publicada no Lexa. Uma falha não apaga as demais verificações. O GitHub Actions programa a consulta para 06:40 em Brasília, tem somente permissão de leitura e guarda por 30 dias o relatório, as tentativas e os HTMLs efetivamente recebidos, identificados por SHA-256.
+A conferência diária consulta na Câmara uma fonte oficial para cada uma das 13 legislações do Lexa. Cada resultado é comparado diretamente à edição publicada. Uma falha não apaga as demais evidências, mas a execução só fica verde quando conclui **13/13** comparações. O GitHub Actions programa a consulta para 06:40 em Brasília, tem somente permissão de leitura e guarda por 30 dias o relatório, as tentativas e os HTMLs efetivamente recebidos, identificados por SHA-256.
 
 O resultado diário é documental: não altera `data/`, `sources/`, `monitor/official/`, histórico ou estados de revisão; não cria PR e não publica. Uma diferença pode já existir entre as fontes e não significa necessariamente mudança ocorrida naquele dia. Execuções parciais falham visivelmente, mas preservam toda evidência já obtida no artefato.
 
