@@ -41,14 +41,14 @@ Se já tiver um clone com alterações próprias, reutilize-o; **não** clone po
 Inicie com `codex` no diretório do repositório. Na primeira abertura, escolha **entrar com ChatGPT** em vez de configurar uma chave da API sem necessidade. Uma chave da API tem faturamento separado. Verifique no Codex `/status` para observar os limites da conta.
 
 ## Teste inicial seguro
-Peça ao Codex: “Leia `AGENTS.md`, `docs/ESTRUTURA.md` e `package.json`. Explique os comandos de build e testes do Lexa, sem alterar arquivos nem executar ações externas.” Verifique a resposta contra os arquivos.
+Peça ao Codex: “Leia `AGENTS.md`, `docs/desenvolvimento/ESTRUTURA.md` e `package.json`. Explique os comandos de build e testes do Lexa, sem alterar arquivos nem executar ações externas.” Verifique a resposta contra os arquivos.
 
 Em seguida, execute manualmente:
 ```powershell
 npm test
 python -m unittest discover -s tests -p "test_*.py"
 ```
-Os testes de navegador dependem de configuração própria descrita em `docs/MANUTENCAO.md`. Após preparar as dependências, podem ser executados com:
+Os testes de navegador dependem de configuração própria descrita em `docs/desenvolvimento/MANUTENCAO.md`. Após preparar as dependências, podem ser executados com:
 ```powershell
 python scripts/run_browser_tests.py --suite essential
 ```

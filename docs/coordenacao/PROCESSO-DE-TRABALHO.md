@@ -39,7 +39,7 @@ Issues e PRs são os registros principais de execução e decisão. O resumo hab
 | O que está em produção? | `main` e execução de publicação do GitHub Pages |
 | O que há para fazer? | Issues e critérios de aceite |
 | Uma alteração foi proposta ou integrada? | PR: base, HEAD, checks e `merged_at` |
-| Qual regra técnica está vigente? | [Estrutura](ESTRUTURA.md) e [Manutenção](MANUTENCAO.md) na branch correspondente |
+| Qual regra técnica está vigente? | [Estrutura](../desenvolvimento/ESTRUTURA.md) e [Manutenção](../desenvolvimento/MANUTENCAO.md) na branch correspondente |
 | Quais evidências sustentam a entrega? | Resultados reais, commits e arquivos vinculados na Issue ou no PR |
 
 Não produzir pareceres, auditorias, atas ou relatórios extensos por padrão. Evitar duplicação entre GitHub, Drive e Markdown, inclusive tabelas manuais de status de PR. Criar documentos adicionais somente para decisões duradouras, investigações complexas, evidência jurídica ou reprodução de testes. Vincular material existente quando necessário; não reescrever documentos históricos para alterar a situação registrada à época. Atualizar documentação corrente apenas quando seu conteúdo mudar. A simplificação não exige novos documentos, templates ou etapas de aprovação.
@@ -54,14 +54,14 @@ Não produzir pareceres, auditorias, atas ou relatórios extensos por padrão. E
 - **Infra/PWA/importadores:** build, testes Node, Python e navegador, com verificações de cache e versões relevantes ao risco.
 - **Conteúdo jurídico:** evidências de procedência, testes de integridade e revisão humana independente antes da incorporação quando juridicamente necessária.
 
-Executar os comandos aplicáveis de [AGENTS.md](../AGENTS.md) e [Manutenção](MANUTENCAO.md). Nunca declarar testes não executados como aprovados nem alegar execução local, certificação de acessibilidade ou aprovação jurídica sem evidência.
+Executar os comandos aplicáveis de [AGENTS.md](../../AGENTS.md) e [Manutenção](../desenvolvimento/MANUTENCAO.md). Nunca declarar testes não executados como aprovados nem alegar execução local, certificação de acessibilidade ou aprovação jurídica sem evidência.
 
 ## 6. Operação com Codex local
 
 - Código e testes residem no computador; GitHub preserva repositório e histórico. O chat não é a única memória do trabalho.
 - Manter poucas instruções duráveis em `AGENTS.md`; consultar documentação específica sob demanda, sem reprocessar todo o histórico a cada sessão.
 - Priorizar tarefas delimitadas e monitorar o limite de uso. Se ele terminar, continuar manualmente ou retomar pelo Git em outra sessão, sem depender de execuções remotas.
-- Codex local utiliza modelos hospedados e autenticação; não é operação de IA inteiramente offline. A preparação do Windows permanece em [CODEX-LOCAL.md](CODEX-LOCAL.md).
+- Codex local utiliza modelos hospedados e autenticação; não é operação de IA inteiramente offline. A preparação do Windows permanece em [CODEX-LOCAL.md](../desenvolvimento/CODEX-LOCAL.md).
 
 
 ### Redações anteriores — autorização de lançamento
@@ -70,4 +70,4 @@ A candidata pode ser preparada com validação automatizada integral e revisão 
 
 Antes de publicar o lote por validação de risco em substituição à homologação individual, o responsável deve registrar expressamente a decisão de governança que admite esse regime, o protocolo e a aceitação da revisão por risco, e a autorização de lançamento. A amostra técnica por IA não preenche esses campos por si só. Até essas decisões, `data/previous-wordings/release.json` permanece com `publicationAuthorized: false`; nenhum registro pending é promovido automaticamente a homologado. O estado de revisão documental e a autorização de publicação são distintos.
 
-O procedimento e as pendências da candidata estão em [REDACOES-ANTERIORES-LANCAMENTO.md](REDACOES-ANTERIORES-LANCAMENTO.md). Esta seção registra a condição operacional, não uma dispensa de homologação nem autorização de publicação.
+O procedimento e as pendências da candidata estão em [REDACOES-ANTERIORES-LANCAMENTO.md](../REDACOES-ANTERIORES-LANCAMENTO.md). Esta seção registra a condição operacional, não uma dispensa de homologação nem autorização de publicação.

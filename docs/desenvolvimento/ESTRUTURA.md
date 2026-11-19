@@ -61,7 +61,7 @@ A conferência diária da Câmara compara as 13 legislações com a edição pub
 
 As súmulas continuam com atualização manual; a rotina de coleta do STF permanece disponível somente para diagnóstico manual. Esta organização não reativa a coleta.
 
-Consulte [Manutenção](MANUTENCAO.md), o [monitor das legislações](../monitor/README.md) e o [monitor do STF](../monitor/stf/README.md) para procedimentos e limites das fontes. Não edite diretamente os dados gerados para corrigir o processamento: ajuste o importador e confira a saída e a procedência.
+Consulte [Manutenção](MANUTENCAO.md), o [monitor das legislações](../../monitor/README.md) e o [monitor do STF](../../monitor/stf/README.md) para procedimentos e limites das fontes. Não edite diretamente os dados gerados para corrigir o processamento: ajuste o importador e confira a saída e a procedência.
 
 ## Redações anteriores e preservação
 
@@ -83,10 +83,10 @@ Na conferência da Câmara, `camara_sources.py` identifica as fontes,
 somente as decisões documentadas à prévia isolada. `pilot_official_sources.py`
 coordena a execução. A modularização não modifica essas decisões.
 
-O fluxo corrente e seus comandos estão em [REDACOES-ANTERIORES-SIMPLES.md](REDACOES-ANTERIORES-SIMPLES.md). `experiments/html-history/existing-records.json` é a base de 96 registros usada pelos testes dos fluxos anteriores; não é um log descartável. O snapshot `experiments/previous-wordings-simple/20261021-associations-corrected/` contém extração, apresentação e leitor de referência do lote corrente. `experiments/previous-wordings-release/20261021-associations/validation.json` é dependência do controle de integridade do build.
+O fluxo corrente e seus comandos estão em [REDACOES-ANTERIORES-SIMPLES.md](../redacoes-anteriores/REDACOES-ANTERIORES-SIMPLES.md). `experiments/html-history/existing-records.json` é a base de 96 registros usada pelos testes dos fluxos anteriores; não é um log descartável. O snapshot `experiments/previous-wordings-simple/20261021-associations-corrected/` contém extração, apresentação e leitor de referência do lote corrente. `experiments/previous-wordings-release/20261021-associations/validation.json` é dependência do controle de integridade do build.
 
-As cópias locais retiradas do índice estão em [experiments/PRESERVACAO.json](../experiments/PRESERVACAO.json), com SHA-256, ZIP externo e commit-base. Elas continuam no histórico Git; o saneamento reduz o checkout futuro, não o histórico já armazenado. Não apagar evidências nem sobrescrever fontes para economizar espaço.
+As cópias locais retiradas do índice estão em [experiments/PRESERVACAO.json](../../experiments/PRESERVACAO.json), com SHA-256, ZIP externo e commit-base. Elas continuam no histórico Git; o saneamento reduz o checkout futuro, não o histórico já armazenado. Não apagar evidências nem sobrescrever fontes para economizar espaço.
 
 ## Licenciamento
 
-O código do Lexa está sob a [PolyForm Noncommercial 1.0.0](../LICENSE), com avisos em [NOTICE.md](../NOTICE.md).
+O código do Lexa está sob a [PolyForm Noncommercial 1.0.0](../../LICENSE), com avisos em [NOTICE.md](../../NOTICE.md).

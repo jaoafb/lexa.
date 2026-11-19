@@ -25,7 +25,7 @@ O Lexa é uma biblioteca gratuita para consultar legislação federal no computa
 
 O **ADCT** reúne disposições transitórias da Constituição e tem numeração própria. As **súmulas vinculantes** são enunciados do Supremo Tribunal Federal com efeito vinculante nos termos da Constituição.
 
-As **Emendas Constitucionais nº 1–141** são as publicações originais da Câmara. O mantenedor autorizou sua disponibilização, e a homologação jurídica humana independente segue pendente. Para aplicação jurídica e vigência, confira as fontes oficiais. [Registro da publicação das emendas](EMENDAS-CONSTITUCIONAIS.md)
+As **Emendas Constitucionais nº 1–141** são as publicações originais da Câmara. O mantenedor autorizou sua disponibilização, e a homologação jurídica humana independente segue pendente. Para aplicação jurídica e vigência, confira as fontes oficiais. [Registro da publicação das emendas](../EMENDAS-CONSTITUCIONAIS.md)
 
 ## Busca
 
@@ -66,9 +66,9 @@ Confira a edição indicada durante a leitura offline. Quando a opção **Atuali
 
 ## Edições e fontes
 
-O leitor apresenta a edição, a procedência e os links para conferência em **Sobre esta versão e a fonte de origem**. Os códigos, as leis federais e a Constituição usam edições do Planalto incorporadas após revisão. Os PDFs de referência estão arquivados, incluindo o PDF completo da CLT com seus anexos. [Fontes arquivadas](../sources/)
+O leitor apresenta a edição, a procedência e os links para conferência em **Sobre esta versão e a fonte de origem**. Os códigos, as leis federais e a Constituição usam edições do Planalto incorporadas após revisão. Os PDFs de referência estão arquivados, incluindo o PDF completo da CLT com seus anexos. [Fontes arquivadas](../../sources/)
 
-As súmulas vinculantes usam o PDF fornecido ao projeto, que declara consulta ao STF em **16/10/2026** e reúne 63 entradas. O Lexa conserva as indicações desse documento, incluindo a **SV 9 como cancelada** e a **SV 30 como pendente de publicação**. A atualização é manual. [Procedimento para as súmulas](../monitor/stf/README.md)
+As súmulas vinculantes usam o PDF fornecido ao projeto, que declara consulta ao STF em **16/10/2026** e reúne 63 entradas. O Lexa conserva as indicações desse documento, incluindo a **SV 9 como cancelada** e a **SV 30 como pendente de publicação**. A atualização é manual. [Procedimento para as súmulas](../../monitor/stf/README.md)
 
 A rotina diária compara a edição publicada com as fontes oficiais da Câmara e entrega um relatório para revisão. A página Atualizações mostra as edições já incorporadas e as diferenças registradas. Confira a redação, as notas e a vigência na fonte oficial. A data da coleta indica quando a fonte foi consultada. [Atualizações do acervo](https://pajaao.github.io/lexa./#/atualizacoes)
 
