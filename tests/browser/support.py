@@ -24,6 +24,21 @@ def chromium_executable():
     return shutil.which('chromium') or shutil.which('chromium-browser')
 
 
+def goto_reader(page, url):
+    # During hash navigation, the previous reader can still contain the target article.
+    previous_url = page.url
+    previous_reader = page.query_selector('#articles')
+    try:
+        page.goto(url)
+        if (previous_reader and previous_url != url
+                and previous_url.split('#')[0] == url.split('#')[0]):
+            page.wait_for_function('(reader) => !reader.isConnected', arg=previous_reader)
+    finally:
+        if previous_reader:
+            previous_reader.dispose()
+    expect(page.locator('#art-' + url.rsplit('/', 1)[-1])).to_be_visible()
+
+
 def app_evaluate(page, expression, argument=None):
     """Inspect ES-module exports from tests, without a production debug global.
     The fallback keeps old inline baselines measurable by the same harness.

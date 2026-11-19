@@ -8,7 +8,7 @@ import sys
 import tempfile
 import threading
 from playwright.sync_api import sync_playwright, expect
-from support import chromium_executable
+from support import chromium_executable, goto_reader
 
 ROOT=Path(__file__).resolve().parents[2]
 candidate='--candidate' in sys.argv
@@ -44,7 +44,7 @@ with tempfile.TemporaryDirectory(prefix='previous-groups-',dir=ROOT/'test-result
                 page=context.new_page(); errors=[]
                 page.on('pageerror',lambda e:errors.append(str(e)))
                 for code,article in ([('penal','215')] if before else [('penal','215'),caput_only,other_only,multiple,empty]):
-                    page.goto(f'http://127.0.0.1:{server.server_port}/#/{code}/{article}')
+                    goto_reader(page, f'http://127.0.0.1:{server.server_port}/#/{code}/{article}')
                     trigger=page.locator(f'#art-{article} [data-legislative-history]')
                     if (code,article)==empty:
                         expect(trigger).to_have_count(0); continue

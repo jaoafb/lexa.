@@ -7,7 +7,7 @@ import subprocess
 import tempfile
 import threading
 from playwright.sync_api import sync_playwright, expect
-from support import artifact_path, chromium_executable
+from support import artifact_path, chromium_executable, goto_reader
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -15,22 +15,6 @@ ROOT = Path(__file__).resolve().parents[2]
 class Handler(http.server.SimpleHTTPRequestHandler):
     def log_message(self, *args):
         pass
-
-
-def goto_reader(page, url):
-    # Hash navigation returns before the async route has replaced the reader.
-    # Adjacent articles can already match in the old page of 15 entries,
-    # particularly while CF amendment links are loading. Visibility alone
-    # would accept that stale reader and race its removal during scrolling.
-    previous_url = page.url
-    previous_reader = page.query_selector('#articles')
-    page.goto(url)
-    if (previous_reader and previous_url != url
-            and previous_url.split('#')[0] == url.split('#')[0]):
-        page.wait_for_function('(reader) => !reader.isConnected', arg=previous_reader)
-    if previous_reader:
-        previous_reader.dispose()
-    expect(page.locator('#art-' + url.rsplit('/', 1)[-1])).to_be_visible()
 
 
 def previous_rows(rows,code,article):
