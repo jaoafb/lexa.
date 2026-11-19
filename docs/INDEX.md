@@ -1,25 +1,27 @@
 # Documentação do Lexa
 
-## Operação corrente
-
-- [README](../README.md): produto, consulta, instalação e execução local.
-- [Estrutura](ESTRUTURA.md): responsabilidades de fontes, dados, evidências e build.
-- [Manutenção](MANUTENCAO.md), [monitor das legislações](../monitor/README.md) e [STF](../monitor/stf/README.md): procedimentos; coleta do STF pausada.
-- [Redações anteriores — HTML simples](REDACOES-ANTERIORES-SIMPLES.md), [núcleo técnico](EXTRATOR-REDACOES-HTML.md) e [decisão de lançamento](REDACOES-ANTERIORES-LANCAMENTO.md).
-- [Governança v3](PROCESSO-DE-TRABALHO.md), [instruções para agentes](../AGENTS.md) e [Codex no Windows](CODEX-LOCAL.md).
-- [Verificações de PR](../.github/workflows/verify.yml) e [publicação](../.github/workflows/deploy-pages.yml). Estado corrente de Issues, PRs e execuções deve ser consultado no GitHub.
-- Código sob [PolyForm Noncommercial 1.0.0](../LICENSE), com avisos em [NOTICE.md](../NOTICE.md).
+| Preciso de… | Consulte |
+| --- | --- |
+| Buscar, ler ou instalar o Lexa | [Guia de consulta](GUIA-DE-CONSULTA.md) |
+| Encontrar os arquivos da aplicação, do acervo ou do build | [Estrutura do projeto](ESTRUTURA.md) |
+| Executar testes, gerar prévias e publicar | [Manutenção](MANUTENCAO.md) e [baseline de desempenho](BASELINE-DESEMPENHO.md) |
+| Conferir fontes ou preparar uma atualização | [Monitor das legislações](../monitor/README.md) e [monitor do STF](../monitor/stf/README.md) |
+| Manter a biblioteca de Emendas Constitucionais | [Publicação, vínculos e manutenção das emendas](EMENDAS-CONSTITUCIONAIS.md) |
+| Trabalhar com redações anteriores | [Fluxo HTML simples](REDACOES-ANTERIORES-SIMPLES.md), [extrator](EXTRATOR-REDACOES-HTML.md) e [decisão de lançamento](REDACOES-ANTERIORES-LANCAMENTO.md) |
+| Preparar uma alteração no repositório | [Processo de trabalho](PROCESSO-DE-TRABALHO.md), [instruções para agentes](../AGENTS.md) e [Codex no Windows](CODEX-LOCAL.md) |
 
 ## Fontes e evidências
 
 - [PDFs e manifestos](../sources/), [HTMLs locais](../HTML/), [capturas do monitor](../monitor/official/), [dados oficiais](../data/official/) e [dados PDF arquivados](../data/archive/).
 - [Distribuição de redações anteriores](../data/previous-wordings/) e [inventário de preservação externa](../experiments/PRESERVACAO.json). A autorização de consulta não altera os estados de homologação.
 
-## Registros históricos
+## Referências e registros anteriores
 
-- [Fluxo HTML anterior](REDACOES-ANTERIORES.md): reprodução de experimentos anteriores; não é o procedimento corrente.
-- [Baseline de desempenho](BASELINE-DESEMPENHO.md), [revisão](REVISAO-DESEMPENHO.md), [otimizações](OTIMIZACAO-ETAPAS-2-6.md), [baselines](baselines/) e [medições](medicoes/ux-etapa-2-carregamento.json).
-- [UX etapa 1](UX-REFINAMENTOS-ETAPA-1.md), [etapa 2](UX-REFINAMENTOS-ETAPA-2.md) e [portabilidade Windows](VALIDACAO-PORTABILIDADE-WINDOWS.md). Seus resultados descrevem execuções passadas, não testes executados agora.
-- [Coordenação](coordenacao/INDEX.md): sem duplicar pareceres administrativos no código.
+- [Arquivo de documentação](arquivo/README.md) com estudos de desempenho, entregas de UX, testes de portabilidade e o fluxo anterior de extração por HTML.
+- [Histórico legislativo](HISTORICO-LEGISLATIVO.md), [UX e interface](ux-ui/lote-1.md) e [coordenação](coordenacao/INDEX.md).
+- Remissões expressas e os fluxos de PDFs/Câmara para redações anteriores estão suspensos. Consulte os registros no histórico do Git.
 
-Remissões expressas e os fluxos de PDFs/Câmara para redações anteriores estão suspensos. Os registros antigos continuam no histórico Git; não constituem funcionalidades ativas nem autorização de publicação. Não se mantém neste índice referência a backups externos cujo conteúdo não foi verificado.
+## Verificações e licença
+
+- [Verificações de PR](../.github/workflows/verify.yml), [publicação](../.github/workflows/deploy-pages.yml) e [conferência diária](../.github/workflows/pilot-official-sources.yml). Consulte o GitHub para o estado de issues, PRs e execuções.
+- Código sob a [PolyForm Noncommercial 1.0.0](../LICENSE), com [avisos de licenciamento e fontes](../NOTICE.md).

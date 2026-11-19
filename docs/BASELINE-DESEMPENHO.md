@@ -143,4 +143,4 @@ Essa é a transferência do preparo completo, incluindo a navegação inicial e 
 
 ## Continuidade da otimização
 
-As medições e os números de suítes acima registram a etapa 1. Na versão das etapas 2–6, a suíte essencial tem nove verificações e a completa inclui sessão longa e atualização parcial com duas abas. O preparo completo passou a ser explícito; `offline_first_visit` mede separadamente a instalação parcial. Consulte [decisões e comparação final](OTIMIZACAO-ETAPAS-2-6.md) antes de comparar os cenários offline.
+As medições e os números de suítes acima registram a etapa 1. Na versão das etapas 2–6, a suíte essencial tem nove verificações e a completa inclui sessão longa e atualização parcial com duas abas. O preparo completo passou a ser explícito; `offline_first_visit` mede separadamente a instalação parcial. Consulte [decisões e comparação final](arquivo/OTIMIZACAO-ETAPAS-2-6.md) antes de comparar os cenários offline.
