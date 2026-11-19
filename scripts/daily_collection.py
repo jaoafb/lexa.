@@ -16,8 +16,9 @@ def save(path, value):
 
 
 def exit_status(report):
-    return int(not report['successfulComparisons'] or any(
-        item['status'] == 'internal_error' for item in report['results']))
+    # The artifact keeps every successful result, but a green scheduled run
+    # means that all configured legislations were actually compared.
+    return int(not report['complete'])
 
 
 def run(specs, current, directory, *, compare=probe, transport=None):

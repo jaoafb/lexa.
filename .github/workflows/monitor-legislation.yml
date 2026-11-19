@@ -1,22 +1,9 @@
-name: Verificar fontes da legislação
+name: Preparar atualização da legislação (manual)
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/monitor-legislation.yml'
-      - 'scripts/**'
-      - 'tests/**'
-      - 'src/**'
-      - 'public/**'
-      - 'package.json'
-      - 'data/archive/**'
-      - 'data/official/sumulas.js'
-      - 'data/history/sumulas.js'
-      - 'sources/sumulas-manifest.json'
-      - 'monitor/sources.json'
-  # A conferência diária somente leitura está em pilot-official-sources.yml.
-  # Este fluxo de preparação de propostas continua disponível por push/manual.
+  # O acesso direto às fontes antigas do Planalto pode redirecionar para fora
+  # dos domínios autorizados. Este fluxo permanece disponível somente para uma
+  # execução humana deliberada; a conferência automática está no fluxo diário.
   workflow_dispatch:
 
 permissions:
